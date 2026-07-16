@@ -168,6 +168,29 @@
   }
   footer a{ color:var(--accent); text-decoration:none; }
 
+  .insta-link{
+    margin-top:12px;
+  }
+  .insta-link a{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:100px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .insta-link a:hover{
+    border-color: rgba(255,138,101,0.4);
+    background: rgba(255,138,101,0.08);
+    color: var(--accent2);
+  }
+
   .note{
     text-align:center;
     color:rgba(255,255,255,0.25);
@@ -222,6 +245,16 @@
 
     <footer>
       Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a>
+      <div class="insta-link">
+        <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <span>@qpjb_13</span>
+        </a>
+      </div>
     </footer>
     <div class="note">Dates et adresses à compléter — page provisoire</div>
   </main>
