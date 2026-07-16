@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QPJB — Panneau d'administration</title>
+<style>
+  :root{
+    --bg1: #0f1420;
+    --bg2: #161d2e;
+    --card: rgba(255,255,255,0.045);
+    --card-border: rgba(255,255,255,0.09);
+    --text: #eef1f8;
+    --muted: #8b93a7;
+    --accent: #6ea8ff;
+    --accent2: #ff8a65;
+    --gold-soft: #d9c48f;
+    --ok: #7fd8a8;
+    --err: #ff8a8a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(110,168,255,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,138,101,0.10), transparent 55%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+
+  header{
+    text-align:center;
+    padding:44px 20px 8px;
+  }
+  .suits{
+    font-size:18px;
+    letter-spacing:12px;
+    color: var(--gold-soft);
+    margin-bottom:12px;
+  }
+  .suits span.red{ color: var(--accent2); }
+  h1{
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    font-weight:800;
+    font-size:clamp(24px, 5vw, 34px);
+    letter-spacing:1.5px;
+    margin:0;
+    color:#fbf5e8;
+    text-transform:uppercase;
+  }
+  .tagline{
+    margin-top:8px;
+    font-style:italic;
+    color: var(--gold-soft);
+    font-size:14px;
+    font-family: Georgia, 'Iowan Old Style', serif;
+  }
+
+  main{
+    max-width:940px;
+    margin:0 auto;
+    padding:20px 20px 80px;
+  }
+
+  /* ---------- écran de connexion ---------- */
+  .lock-screen{
+    max-width:380px;
+    margin:60px auto 0;
+    background: var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:32px 28px;
+    text-align:center;
+    backdrop-filter: blur(14px);
+  }
+  .lock-icon{ font-size:28px; margin-bottom:10px; }
+  .lock-screen h2{
+    font-size:16px;
+    margin:0 0 6px;
+  }
+  .lock-screen p{
+    font-size:12.5px;
+    color:var(--muted);
+    margin:0 0 20px;
+    line-height:1.5;
+  }
+
+  /* ---------- panels ---------- */
+  .panel{
+    background: var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:24px;
+    backdrop-filter: blur(14px);
+    margin-bottom:20px;
+  }
+  .panel h2{
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:2px;
+    font-size:13px;
+    color: var(--gold-soft);
+    margin:0 0 6px;
+  }
+  .panel .sub{
+    font-size:12px;
+    color:var(--muted);
+    margin:0 0 18px;
+    line-height:1.5;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:22px;
+    align-items:start;
+  }
+  @media (max-width:820px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  .group{
+    margin-bottom:22px;
+    padding-bottom:18px;
+    border-bottom:1px dashed var(--card-border);
+  }
+  .group:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+
+  .group-title{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .dot{ width:8px; height:8px; border-radius:50%; }
+  .dot.aix{ background: var(--accent); }
+  .dot.marseille{ background: var(--accent2); }
+
+  label{
+    display:block;
+    font-size:12px;
+    color:var(--muted);
+    margin:10px 0 5px;
+  }
+  input[type="text"], input[type="password"], input[type="number"]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:9px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size:14px;
+    font-family:inherit;
+  }
+  input:focus{ outline:none; border-color: var(--accent); }
+  .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .hint{ font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
+
+  .actions{ margin-top:24px; display:flex; flex-direction:column; gap:10px; }
+  button{
+    font-family:inherit;
+    font-size:14px;
+    font-weight:700;
+    padding:13px 18px;
+    border-radius:11px;
+    border:none;
+    cursor:pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  button:disabled{ opacity:0.5; cursor:not-allowed; }
+  button:active:not(:disabled){ transform: scale(0.98); }
+  .btn-primary{ background: linear-gradient(135deg, var(--accent), #8fbcff); color: #0f1420; }
+  .btn-secondary{ background: rgba(255,255,255,0.06); color: var(--text); border:1px solid var(--card-border); }
+  .btn-publish{ background: linear-gradient(135deg, var(--ok), #a9f0c8); color:#0f1420; }
+  .btn-danger{ background: rgba(255,138,138,0.12); color: var(--err); border:1px solid rgba(255,138,138,0.3); }
+
+  .status{ font-size:12.5px; text-align:center; min-height:16px; }
+  .status.ok{ color: var(--ok); }
+  .status.err{ color: var(--err); }
+  .status.pending{ color: var(--accent); }
+
+  .preview-wrap{ position:sticky; top:20px; }
+  .preview-frame{
+    border-radius:16px; overflow:hidden;
+    border:1px solid var(--card-border);
+    height:560px; background:#0f1420;
+  }
+  .preview-frame iframe{ width:100%; height:100%; border:none; }
+  .preview-label{
+    text-align:center; font-size:12px; color:var(--muted);
+    margin-bottom:10px; text-transform:uppercase; letter-spacing:2px;
+  }
+
+  .toggle-settings{
+    font-size:12px;
+    color:var(--accent);
+    cursor:pointer;
+    text-align:right;
+    margin-bottom:4px;
+    user-select:none;
+  }
+  .settings-body{ display:none; }
+  .settings-body.open{ display:block; }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+  }
+  .logout{
+    font-size:12px;
+    color:var(--muted);
+    cursor:pointer;
+    text-decoration:underline;
+  }
+
+  footer{ text-align:center; margin-top:30px; color:var(--muted); font-size:12px; }
+  code{ background: rgba(255,255,255,0.06); padding:2px 6px; border-radius:5px; }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
+    <h1>QPJB — Administration</h1>
+    <div class="tagline">Panneau de mise à jour des soirées</div>
+  </header>
+
+  <main>
+
+    <!-- ÉCRAN DE CONNEXION -->
+    <div class="lock-screen" id="lock-screen">
+      <div class="lock-icon">🔒</div>
+      <h2 id="lock-title">Accès protégé</h2>
+      <p id="lock-desc">Entre le mot de passe d'accès pour ce panneau.</p>
+      <input type="password" id="password-input" placeholder="Mot de passe" style="margin-bottom:12px;">
+      <input type="password" id="password-confirm" placeholder="Confirme le mot de passe" style="margin-bottom:12px; display:none;">
+      <button class="btn-primary" style="width:100%;" onclick="handleLogin()" id="lock-btn">Entrer</button>
+      <div class="status" id="lock-status" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- PANNEAU (masqué tant que non connecté) -->
+    <div id="admin-panel" style="display:none;">
+
+      <div class="topbar">
+        <div></div>
+        <div class="logout" onclick="logout()">Se déconnecter</div>
+      </div>
+
+      <div class="panel">
+        <div class="toggle-settings" onclick="toggleSettings()">⚙️ Réglages GitHub (repo, jeton d'accès) ▾</div>
+        <div class="settings-body" id="settings-body">
+          <p class="sub">
+            Ces informations restent uniquement enregistrées dans ce navigateur, sur cet appareil.
+            Elles ne sont jamais envoyées ailleurs qu'à GitHub.
+          </p>
+          <div class="row2">
+            <div>
+              <label>Propriétaire du repo (ton pseudo GitHub)</label>
+              <input type="text" id="gh-owner" placeholder="ex : qpjb-asso">
+            </div>
+            <div>
+              <label>Nom du repo</label>
+              <input type="text" id="gh-repo" placeholder="ex : qpjb-site">
+            </div>
+          </div>
+          <div class="row2">
+            <div>
+              <label>Branche</label>
+              <input type="text" id="gh-branch" placeholder="main">
+            </div>
+            <div>
+              <label>Chemin du fichier à mettre à jour</label>
+              <input type="text" id="gh-path" placeholder="index.html">
+            </div>
+          </div>
+          <label>Jeton d'accès GitHub (Personal Access Token)</label>
+          <input type="password" id="gh-token" placeholder="ghp_...">
+          <div class="hint">
+            Crée un jeton « fine-grained » limité à ce seul repo, avec la permission
+            <code>Contents: Read and write</code>. Voir les instructions en bas de page.
+          </div>
+          <div class="actions">
+            <button class="btn-secondary" onclick="saveSettings()">Enregistrer les réglages</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="layout">
+
+        <!-- FORMULAIRE -->
+        <div class="panel">
+          <h2>Informations à modifier</h2>
+
+          <div class="group">
+            <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
+            <label>Jour du mois (ex : 22)</label>
+            <input type="text" id="aix-jj" placeholder="22">
+            <label>Mois abrégé, 3 lettres (ex : JUIL)</label>
+            <input type="text" id="aix-mois" placeholder="JUIL">
+            <label>Date complète affichée (ex : 22 juillet)</label>
+            <input type="text" id="aix-date" placeholder="22 juillet">
+            <label>Adresse</label>
+            <input type="text" id="aix-adresse1" placeholder="18 Boulevard du Maréchal Juin">
+            <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;">
+          </div>
+
+          <div class="group">
+            <div class="group-title"><span class="dot marseille"></span> Soirée Marseille</div>
+            <label>Jour du mois (ex : 29)</label>
+            <input type="text" id="mar-jj" placeholder="29">
+            <label>Mois abrégé, 3 lettres (ex : JUIL)</label>
+            <input type="text" id="mar-mois" placeholder="JUIL">
+            <label>Date complète affichée (ex : 29 juillet)</label>
+            <input type="text" id="mar-date" placeholder="29 juillet">
+            <label>Adresse (laisser vide si pas encore connue)</label>
+            <input type="text" id="mar-adresse" placeholder="Adresse à Marseille">
+          </div>
+
+          <div class="actions">
+            <button class="btn-publish" onclick="publier()" id="publish-btn">🚀 Publier sur GitHub</button>
+            <button class="btn-secondary" onclick="genererFichier()">⬇️ Télécharger le fichier à la place</button>
+            <div class="status" id="status"></div>
+          </div>
+        </div>
+
+        <!-- APERÇU -->
+        <div class="preview-wrap">
+          <div class="preview-label">Aperçu en direct</div>
+          <div class="preview-frame">
+            <iframe id="preview" title="Aperçu"></iframe>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <footer id="help-footer" style="display:none;">
+      <p><strong>Créer le jeton GitHub :</strong> GitHub → ton avatar → Settings → Developer settings →
+      Personal access tokens → Fine-grained tokens → Generate new token.
+      Choisis « Only select repositories » et sélectionne uniquement ce repo,
+      puis dans Permissions → Contents, choisis « Read and write ». Copie le jeton généré
+      (il ne sera plus jamais réaffiché) et colle-le dans les réglages ci-dessus.</p>
+    </footer>
+  </main>
+
+<script>
+/* ---------------- Connexion (verrou local à cet appareil) ---------------- */
+async function sha256(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function hasStoredHash(){
+  return !!localStorage.getItem('qpjb-admin-hash');
+}
+
+function initLockScreen(){
+  const confirmInput = document.getElementById('password-confirm');
+  if(!hasStoredHash()){
+    document.getElementById('lock-title').textContent = 'Créer un mot de passe';
+    document.getElementById('lock-desc').textContent = 'Première visite sur cet appareil : choisis un mot de passe pour protéger ce panneau.';
+    confirmInput.style.display = 'block';
+    document.getElementById('lock-btn').textContent = 'Créer et entrer';
+  }
+}
+
+async function handleLogin(){
+  const pwd = document.getElementById('password-input').value;
+  const status = document.getElementById('lock-status');
+  if(!pwd){ status.textContent = 'Entre un mot de passe.'; status.className='status err'; return; }
+
+  if(!hasStoredHash()){
+    const confirmPwd = document.getElementById('password-confirm').value;
+    if(pwd !== confirmPwd){
+      status.textContent = 'Les deux mots de passe ne correspondent pas.';
+      status.className='status err';
+      return;
+    }
+    const hash = await sha256(pwd);
+    localStorage.setItem('qpjb-admin-hash', hash);
+    unlock();
+    return;
+  }
+
+  const hash = await sha256(pwd);
+  if(hash === localStorage.getItem('qpjb-admin-hash')){
+    sessionStorage.setItem('qpjb-admin-unlocked', '1');
+    unlock();
+  } else {
+    status.textContent = 'Mot de passe incorrect.';
+    status.className = 'status err';
+  }
+}
+
+function unlock(){
+  sessionStorage.setItem('qpjb-admin-unlocked', '1');
+  document.getElementById('lock-screen').style.display = 'none';
+  document.getElementById('admin-panel').style.display = 'block';
+  document.getElementById('help-footer').style.display = 'block';
+  chargerReglages();
+  chargerFormulaire();
+  majApercu();
+}
+
+function logout(){
+  sessionStorage.removeItem('qpjb-admin-unlocked');
+  location.reload();
+}
+
+/* ---------------- Réglages GitHub ---------------- */
+function toggleSettings(){
+  document.getElementById('settings-body').classList.toggle('open');
+}
+
+function saveSettings(){
+  const settings = {
+    owner: document.getElementById('gh-owner').value.trim(),
+    repo: document.getElementById('gh-repo').value.trim(),
+    branch: document.getElementById('gh-branch').value.trim() || 'main',
+    path: document.getElementById('gh-path').value.trim() || 'index.html',
+    token: document.getElementById('gh-token').value.trim()
+  };
+  localStorage.setItem('qpjb-gh-settings', JSON.stringify(settings));
+  const status = document.getElementById('status');
+  status.textContent = '✓ Réglages enregistrés sur cet appareil';
+  status.className = 'status ok';
+  setTimeout(()=> status.textContent='', 3000);
+}
+
+function chargerReglages(){
+  try{
+    const s = JSON.parse(localStorage.getItem('qpjb-gh-settings'));
+    if(s){
+      document.getElementById('gh-owner').value = s.owner || '';
+      document.getElementById('gh-repo').value = s.repo || '';
+      document.getElementById('gh-branch').value = s.branch || 'main';
+      document.getElementById('gh-path').value = s.path || 'index.html';
+      document.getElementById('gh-token').value = s.token || '';
+    } else {
+      document.getElementById('gh-branch').value = 'main';
+      document.getElementById('gh-path').value = 'index.html';
+    }
+  }catch(e){}
+}
+
+/* ---------------- Génération du HTML final ---------------- */
+function buildHTML(v){
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QPJB — Prochaines soirées</title>
+<style>
+  :root{
+    --bg1: #0f1420;
+    --bg2: #161d2e;
+    --card: rgba(255,255,255,0.045);
+    --card-border: rgba(255,255,255,0.09);
+    --text: #eef1f8;
+    --muted: #8b93a7;
+    --accent: #6ea8ff;
+    --accent2: #ff8a65;
+    --gold-soft: #d9c48f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(110,168,255,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,138,101,0.10), transparent 55%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  header{ text-align:center; padding:56px 20px 10px; animation: fadeIn 0.8s ease both; }
+  .suits{ font-size:20px; letter-spacing:14px; color: var(--gold-soft); margin-bottom:14px; }
+  .suits span.red{ color: var(--accent2); }
+  h1{
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    font-weight:800; font-size:clamp(34px, 6vw, 54px);
+    letter-spacing:2px; margin:0; color:#fbf5e8; text-transform:uppercase;
+  }
+  .tagline{ margin-top:10px; font-style:italic; color: var(--gold-soft); font-size:17px; font-family: Georgia, 'Iowan Old Style', serif; }
+  main{ max-width:700px; margin:0 auto; padding:10px 20px 70px; }
+  .section-label{
+    text-align:center; font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    text-transform:uppercase; letter-spacing:3px; font-size:14px; color:var(--gold-soft); margin:34px 4px 22px;
+  }
+  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:600px){ .events{ grid-template-columns:1fr; } }
+  .event{
+    background: var(--card); border:1px solid var(--card-border); border-radius:16px;
+    padding:22px 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    text-align:center; animation: fadeIn 0.6s ease both;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  .event:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.065); }
+  .event:nth-child(2){ animation-delay:0.08s; }
+  .datebox{
+    width:64px; height:64px; margin:0 auto 14px; border-radius:14px;
+    background: rgba(255,255,255,0.06); border:1px solid var(--card-border);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1;
+  }
+  .datebox .day{ font-size:22px; font-weight:700; }
+  .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+  .pill{ display:inline-block; font-size:11px; padding:3px 9px; border-radius:100px; font-weight:600; letter-spacing:0.3px; margin-bottom:10px; }
+  .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
+  .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
+  .event-title{ font-size:16px; font-weight:600; margin:0 0 8px; }
+  .event-meta{ font-size:13px; color:var(--muted); line-height:1.6; }
+  .event-meta .ph{ color:#c8ad7f; font-style:italic; }
+  .info-strip{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:30px 4px 6px; }
+  .chip{ font-size:12.5px; padding:7px 13px; border-radius:100px; background: rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--muted); }
+  footer{ text-align:center; margin-top:44px; color:var(--muted); font-size:13px; }
+  footer a{ color:var(--accent); text-decoration:none; }
+  .insta-link{ margin-top:12px; }
+  .insta-link a{
+    display:inline-flex; align-items:center; gap:6px; color:var(--text); text-decoration:none;
+    font-size:13px; font-weight:600; padding:6px 14px; border-radius:100px; border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04); transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .insta-link a:hover{ border-color: rgba(255,138,101,0.4); background: rgba(255,138,101,0.08); color: var(--accent2); }
+  .note{ text-align:center; color:rgba(255,255,255,0.25); font-size:11.5px; margin-top:8px; font-style:italic; }
+</style>
+</head>
+<body>
+
+  <header>
+    <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
+    <h1>QPJB</h1>
+    <div class="tagline">Quai Provençal des Jeunes Bridgeurs</div>
+  </header>
+
+  <main>
+    <div class="section-label">Prochaines soirées cartes</div>
+
+    <div class="events">
+
+      <div class="event">
+        <div class="datebox"><span class="day">${v.aixJJ}</span><span class="mon">${v.aixMois}</span></div>
+        <div class="pill aix">Aix-en-Provence</div>
+        <div class="event-title">Antenne d'Aix</div>
+        <div class="event-meta">
+          Mardi ${v.aixDate} · 19h00 – 22h30<br>
+          ${v.aixAdresse1}<br>
+          ${v.aixAdresse2}
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="datebox"><span class="day">${v.marJJ}</span><span class="mon">${v.marMois}</span></div>
+        <div class="pill marseille">Marseille</div>
+        <div class="event-title">Antenne de Marseille</div>
+        <div class="event-meta">
+          Mardi ${v.marDate} · 19h00 – 22h30<br>
+          ${v.marAdresseHTML}
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-strip">
+      <span class="chip">🍕 Pizza offerte</span>
+      <span class="chip">Entrée libre</span>
+      <span class="chip">Jeunes &amp; actifs</span>
+      <span class="chip">Un mardi sur deux, en alternance Aix / Marseille</span>
+    </div>
+
+    <footer>
+      Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a>
+      <div class="insta-link">
+        <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <span>@qpjb_13</span>
+        </a>
+      </div>
+    </footer>
+  </main>
+
+</body>
+</html>`;
+}
+
+function getValues(){
+  const val = id => document.getElementById(id).value.trim();
+  const marAdresse = val('mar-adresse');
+  const marAdresseHTML = marAdresse ? marAdresse : '<span class="ph">[Adresse à Marseille — à compléter]</span>';
+  return {
+    aixJJ: val('aix-jj') || '[JJ]',
+    aixMois: val('aix-mois') || '[Mois]',
+    aixDate: val('aix-date') || '[DATE]',
+    aixAdresse1: val('aix-adresse1') || '18 Boulevard du Maréchal Juin',
+    aixAdresse2: val('aix-adresse2') || '13090 Aix-en-Provence',
+    marJJ: val('mar-jj') || '[JJ]',
+    marMois: val('mar-mois') || '[Mois]',
+    marDate: val('mar-date') || '[DATE]',
+    marAdresseHTML
+  };
+}
+
+function majApercu(){
+  const html = buildHTML(getValues());
+  document.getElementById('preview').srcdoc = html;
+  sauvegarderFormulaire();
+}
+
+function genererFichier(){
+  const html = buildHTML(getValues());
+  const blob = new Blob([html], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'index.html';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function sauvegarderFormulaire(){
+  const ids = ['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date','mar-adresse'];
+  const data = {};
+  ids.forEach(id => data[id] = document.getElementById(id).value);
+  localStorage.setItem('qpjb-editeur', JSON.stringify(data));
+}
+
+function chargerFormulaire(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('qpjb-editeur'));
+    if(saved){
+      Object.keys(saved).forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = saved[id];
+      });
+    } else {
+      document.getElementById('aix-adresse1').value = '18 Boulevard du Maréchal Juin';
+      document.getElementById('aix-adresse2').value = '13090 Aix-en-Provence';
+    }
+  }catch(e){}
+}
+
+document.querySelectorAll('#aix-jj,#aix-mois,#aix-date,#aix-adresse1,#aix-adresse2,#mar-jj,#mar-mois,#mar-date,#mar-adresse')
+  .forEach(el => {});
+
+/* attacher les listeners une fois le panneau visible (les éléments existent déjà dans le DOM) */
+['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date','mar-adresse']
+  .forEach(id => document.getElementById(id).addEventListener('input', majApercu));
+
+/* ---------------- Publication sur GitHub ---------------- */
+function toBase64Utf8(str){
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function publier(){
+  const status = document.getElementById('status');
+  const btn = document.getElementById('publish-btn');
+
+  const settings = JSON.parse(localStorage.getItem('qpjb-gh-settings') || '{}');
+  const { owner, repo, branch, path, token } = settings;
+
+  if(!owner || !repo || !token){
+    status.textContent = 'Renseigne d\\'abord les réglages GitHub (⚙️ en haut).';
+    status.className = 'status err';
+    document.getElementById('settings-body').classList.add('open');
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = 'Publication en cours…';
+  status.className = 'status pending';
+
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+
+  try{
+    // 1. Récupérer le sha du fichier existant
+    const getRes = await fetch(`${apiUrl}?ref=${branch}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json'
+      }
+    });
+
+    let sha = undefined;
+    if(getRes.status === 200){
+      const getData = await getRes.json();
+      sha = getData.sha;
+    } else if(getRes.status !== 404){
+      const errData = await getRes.json().catch(()=>({}));
+      throw new Error(`Lecture impossible (${getRes.status}) : ${errData.message || 'erreur inconnue'}`);
+    }
+
+    // 2. Construire le nouveau contenu
+    const html = buildHTML(getValues());
+    const content = toBase64Utf8(html);
+
+    // 3. Envoyer la mise à jour
+    const putRes = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Accept': 'application/vnd.github+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: `Mise à jour des soirées — ${new Date().toLocaleDateString('fr-FR')}`,
+        content,
+        branch,
+        ...(sha ? { sha } : {})
+      })
+    });
+
+    if(!putRes.ok){
+      const errData = await putRes.json().catch(()=>({}));
+      throw new Error(`Publication refusée (${putRes.status}) : ${errData.message || 'erreur inconnue'}`);
+    }
+
+    status.textContent = '✓ Publié sur GitHub avec succès';
+    status.className = 'status ok';
+  } catch(err){
+    status.textContent = '✗ ' + err.message;
+    status.className = 'status err';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---------------- Démarrage ---------------- */
+initLockScreen();
+if(sessionStorage.getItem('qpjb-admin-unlocked') === '1'){
+  unlock();
+}
+document.getElementById('password-input').addEventListener('keydown', e => { if(e.key === 'Enter') handleLogin(); });
+document.getElementById('password-confirm').addEventListener('keydown', e => { if(e.key === 'Enter') handleLogin(); });
+</script>
+
+</body>
+</html>
