@@ -1,4 +1,19 @@
 <!DOCTYPE html>
+<!--
+  ⚠️ IMPORTANT — SYNCHRONISATION
+  Ce panneau contient, dans la fonction buildHTML() du script en bas de
+  page, un MODÈLE COMPLET de la page publique index.html. C'est ce modèle
+  (et non le fichier index.html en ligne) qui est utilisé à chaque clic
+  sur "Publier sur GitHub" — il écrase donc entièrement index.html.
+
+  Conséquence : si index.html est modifié directement (nouveau bouton,
+  nouveau bloc, nouveau style...) sans que ce même changement soit reporté
+  ICI dans buildHTML(), la prochaine publication effacera ce changement.
+
+  Réflexe à avoir : toute modification permanente de la page publique doit
+  être faite à la fois sur index.html ET dans buildHTML() ci-dessous
+  (et idéalement dans editeur_QPJB.html pour rester cohérent).
+-->
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -161,7 +176,7 @@
   .hint{ font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
 
   .actions{ margin-top:24px; display:flex; flex-direction:column; gap:10px; }
-  button{
+  button, a.btn-primary, a.btn-secondary, a.btn-publish, a.btn-danger{
     font-family:inherit;
     font-size:14px;
     font-weight:700;
@@ -170,9 +185,10 @@
     border:none;
     cursor:pointer;
     transition: transform 0.15s ease, opacity 0.15s ease;
+    box-sizing:border-box;
   }
   button:disabled{ opacity:0.5; cursor:not-allowed; }
-  button:active:not(:disabled){ transform: scale(0.98); }
+  button:active:not(:disabled), a.btn-primary:active, a.btn-secondary:active, a.btn-publish:active, a.btn-danger:active{ transform: scale(0.98); }
   .btn-primary{ background: linear-gradient(135deg, var(--accent), #8fbcff); color: #0f1420; }
   .btn-secondary{ background: rgba(255,255,255,0.06); color: var(--text); border:1px solid var(--card-border); }
   .btn-publish{ background: linear-gradient(135deg, var(--ok), #a9f0c8); color:#0f1420; }
@@ -324,7 +340,7 @@
 
           <div class="actions">
             <button class="btn-publish" onclick="publier()" id="publish-btn">🚀 Publier sur GitHub</button>
-            <button class="btn-secondary" onclick="genererFichier()">⬇️ Télécharger le fichier à la place</button>
+            <a href="index.html" class="btn-secondary" style="text-align:center; text-decoration:none;">← Retour au site</a>
             <div class="status" id="status"></div>
           </div>
         </div>
@@ -437,7 +453,7 @@ function unlock(){
 
 function logout(){
   sessionStorage.removeItem('qpjb-admin-unlocked');
-  location.reload();
+  location.href = 'index.html';
 }
 
 /* ---------------- Réglages GitHub ---------------- */
@@ -483,6 +499,21 @@ function buildHTML(v){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<script>
+  // Force un chargement frais une fois par visite (évite qu'un visiteur voie
+  // une version en cache avec d'anciennes dates après une mise à jour)
+  (function(){
+    if(!sessionStorage.getItem('qpjb-fresh-load')){
+      sessionStorage.setItem('qpjb-fresh-load', '1');
+      var url = new URL(location.href);
+      url.searchParams.set('_r', Date.now());
+      location.replace(url.toString());
+    }
+  })();
+<\/script>
 <title>QPJB — Prochaines soirées</title>
 <style>
   :root{
