@@ -34,6 +34,8 @@
   })();
 </script>
 <title>QPJB — Panneau d'administration</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <style>
   :root{
     --bg1: #0f1420;
@@ -346,6 +348,10 @@
         <div class="panel">
           <h2>Informations à modifier</h2>
 
+          <button class="btn-secondary" style="width:100%; margin-bottom:18px;" onclick="calculerProchainsMardis()">
+            🗓️ Calculer les 2 prochains mardis
+          </button>
+
           <div class="group">
             <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
             <label>Jour du mois (ex : 22)</label>
@@ -556,6 +562,16 @@ function buildHTML(v, forPreview){
   })();
 <\/script>
 <title>QPJB — Prochaines soirées</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
+<meta property="og:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
+<meta property="og:image" content="https://capgui13.github.io/QPJB13/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
+<meta name="twitter:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
+<meta name="twitter:image" content="https://capgui13.github.io/QPJB13/og-image.png">
 <style>
   :root{
     --bg1: #0f1420;
@@ -698,10 +714,54 @@ function buildHTML(v, forPreview){
         </a>
       </div>
     </footer>
+    <div class="note">Dernière mise à jour : ${v.lastUpdate}</div>
   </main>
 
 </body>
 </html>`;
+}
+
+function calculerProchainsMardis(){
+  const moisAbbr = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+  const moisComplet = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+  function prochainMardi(fromDate){
+    const d = new Date(fromDate);
+    const day = d.getDay(); // 0=dimanche, 1=lundi, 2=mardi...
+    let diff = (2 - day + 7) % 7;
+    if(diff === 0) diff = 7; // si on est déjà mardi, on prend le suivant
+    d.setDate(d.getDate() + diff);
+    return d;
+  }
+
+  const premier = prochainMardi(new Date());
+  const second = new Date(premier);
+  second.setDate(second.getDate() + 14);
+
+  function remplir(prefix, date){
+    document.getElementById(prefix + '-jj').value = String(date.getDate()).padStart(2,'0');
+    document.getElementById(prefix + '-mois').value = moisAbbr[date.getMonth()];
+    document.getElementById(prefix + '-date').value = date.getDate() + ' ' + moisComplet[date.getMonth()];
+  }
+
+  remplir('aix', premier);
+  remplir('mar', second);
+  majApercu();
+
+  const status = document.getElementById('status');
+  status.textContent = "✓ Dates calculées — vérifie que Aix/Marseille correspondent bien à l'ordre attendu";
+  status.className = 'status ok';
+  setTimeout(()=> status.textContent='', 5000);
+}
+
+function formatLastUpdate(){
+  const d = new Date();
+  const jour = String(d.getDate()).padStart(2,'0');
+  const mois = String(d.getMonth()+1).padStart(2,'0');
+  const annee = d.getFullYear();
+  const heure = String(d.getHours()).padStart(2,'0');
+  const min = String(d.getMinutes()).padStart(2,'0');
+  return `${jour}/${mois}/${annee} à ${heure}h${min}`;
 }
 
 function getValues(){
@@ -717,7 +777,8 @@ function getValues(){
     marJJ: val('mar-jj') || '[JJ]',
     marMois: val('mar-mois') || '[Mois]',
     marDate: val('mar-date') || '[DATE]',
-    marAdresseHTML
+    marAdresseHTML,
+    lastUpdate: formatLastUpdate()
   };
 }
 
