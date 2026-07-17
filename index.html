@@ -1,4 +1,18 @@
 <!DOCTYPE html>
+<!--
+  ⚠️ IMPORTANT — SYNCHRONISATION
+  Ce fichier peut être ENTIÈREMENT RÉÉCRIT par le panneau admin.html
+  (bouton "Publier sur GitHub"), à partir du modèle codé en dur dans
+  la fonction buildHTML() de admin.html.
+
+  Toute modification faite ICI directement (nouveau bloc, nouveau bouton,
+  nouveau style, etc.) sera PERDUE à la prochaine publication depuis le
+  panneau admin, sauf si elle est aussi reportée dans buildHTML()
+  (admin.html) — et idéalement dans editeur_QPJB.html pour rester cohérent.
+
+  Réflexe à avoir : après tout changement permanent sur cette page,
+  vérifier/mettre à jour le modèle correspondant dans admin.html.
+-->
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -42,63 +56,201 @@
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   }
+
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
-  header{ text-align:center; padding:56px 20px 10px; animation: fadeIn 0.8s ease both; }
-  .suits{ font-size:20px; letter-spacing:14px; color: var(--gold-soft); margin-bottom:14px; }
+
+  /* ---------- header (repris du style 1) ---------- */
+  header{
+    text-align:center;
+    padding:56px 20px 10px;
+    animation: fadeIn 0.8s ease both;
+  }
+
+  .suits{
+    font-size:20px;
+    letter-spacing:14px;
+    color: var(--gold-soft);
+    margin-bottom:14px;
+  }
   .suits span.red{ color: var(--accent2); }
+
   h1{
     font-family: 'Futura', 'Trebuchet MS', sans-serif;
-    font-weight:800; font-size:clamp(34px, 6vw, 54px);
-    letter-spacing:2px; margin:0; color:#fbf5e8; text-transform:uppercase;
+    font-weight:800;
+    font-size:clamp(34px, 6vw, 54px);
+    letter-spacing:2px;
+    margin:0;
+    color:#fbf5e8;
+    text-transform:uppercase;
   }
-  .tagline{ margin-top:10px; font-style:italic; color: var(--gold-soft); font-size:17px; font-family: Georgia, 'Iowan Old Style', serif; }
-  main{ max-width:700px; margin:0 auto; padding:10px 20px 70px; }
+
+  .tagline{
+    margin-top:10px;
+    font-style:italic;
+    color: var(--gold-soft);
+    font-size:17px;
+    font-family: Georgia, 'Iowan Old Style', serif;
+  }
+
+  main{
+    max-width:700px;
+    margin:0 auto;
+    padding:10px 20px 70px;
+  }
+
   .section-label{
-    text-align:center; font-family: 'Futura', 'Trebuchet MS', sans-serif;
-    text-transform:uppercase; letter-spacing:3px; font-size:14px; color:var(--gold-soft); margin:34px 4px 22px;
+    text-align:center;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:14px;
+    color:var(--gold-soft);
+    margin:34px 4px 22px;
   }
-  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-  @media (max-width:600px){ .events{ grid-template-columns:1fr; } }
+
+  /* ---------- modules côte à côte (esthétique + police style 2) ---------- */
+  .events{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  @media (max-width:600px){
+    .events{ grid-template-columns:1fr; }
+  }
+
   .event{
-    background: var(--card); border:1px solid var(--card-border); border-radius:16px;
-    padding:22px 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    text-align:center; animation: fadeIn 0.6s ease both;
+    background: var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:22px 20px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    text-align:center;
+    animation: fadeIn 0.6s ease both;
     transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   }
-  .event:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.065); }
+  .event:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.065);
+  }
   .event:nth-child(2){ animation-delay:0.08s; }
+
   .datebox{
-    width:64px; height:64px; margin:0 auto 14px; border-radius:14px;
-    background: rgba(255,255,255,0.06); border:1px solid var(--card-border);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1;
+    width:64px; height:64px;
+    margin:0 auto 14px;
+    border-radius:14px;
+    background: rgba(255,255,255,0.06);
+    border:1px solid var(--card-border);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    line-height:1.1;
   }
   .datebox .day{ font-size:22px; font-weight:700; }
   .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-  .pill{ display:inline-block; font-size:11px; padding:3px 9px; border-radius:100px; font-weight:600; letter-spacing:0.3px; margin-bottom:10px; }
+
+  .pill{
+    display:inline-block;
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:100px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    margin-bottom:10px;
+  }
   .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
   .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
-  .event-title{ font-size:16px; font-weight:600; margin:0 0 8px; }
-  .event-meta{ font-size:13px; color:var(--muted); line-height:1.6; }
+
+  .event-title{
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .event-meta{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+  }
   .event-meta .ph{ color:#c8ad7f; font-style:italic; }
-  .info-strip{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:30px 4px 6px; }
-  .chip{ font-size:12.5px; padding:7px 13px; border-radius:100px; background: rgba(255,255,255,0.05); border:1px solid var(--card-border); color:var(--muted); }
-  footer{ text-align:center; margin-top:44px; color:var(--muted); font-size:13px; }
+
+  .info-strip{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:30px 4px 6px;
+  }
+  .chip{
+    font-size:12.5px;
+    padding:7px 13px;
+    border-radius:100px;
+    background: rgba(255,255,255,0.05);
+    border:1px solid var(--card-border);
+    color:var(--muted);
+  }
+
+  footer{
+    text-align:center;
+    margin-top:44px;
+    color:var(--muted);
+    font-size:13px;
+  }
   footer a{ color:var(--accent); text-decoration:none; }
-  .insta-link{ margin-top:12px; }
+
+  .insta-link{
+    margin-top:12px;
+  }
   .insta-link a{
-    display:inline-flex; align-items:center; gap:6px; color:var(--text); text-decoration:none;
-    font-size:13px; font-weight:600; padding:6px 14px; border-radius:100px; border:1px solid var(--card-border);
-    background: rgba(255,255,255,0.04); transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:100px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
   }
-  .insta-link a:hover{ border-color: rgba(255,138,101,0.4); background: rgba(255,138,101,0.08); color: var(--accent2); }
-  .note{ text-align:center; color:rgba(255,255,255,0.25); font-size:11.5px; margin-top:8px; font-style:italic; }
+  .insta-link a:hover{
+    border-color: rgba(255,138,101,0.4);
+    background: rgba(255,138,101,0.08);
+    color: var(--accent2);
+  }
+
+  .note{
+    text-align:center;
+    color:rgba(255,255,255,0.25);
+    font-size:11.5px;
+    margin-top:8px;
+    font-style:italic;
+  }
+
   .admin-btn{
-    position:fixed; top:16px; right:16px; display:flex; align-items:center; gap:6px;
-    font-size:12px; color:var(--muted); text-decoration:none; padding:7px 12px;
-    border-radius:100px; border:1px solid var(--card-border); background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(10px); transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease; z-index:10;
+    position:fixed;
+    top:16px;
+    right:16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--muted);
+    text-decoration:none;
+    padding:7px 12px;
+    border-radius:100px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+    z-index:10;
   }
-  .admin-btn:hover{ border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: var(--text); }
+  .admin-btn:hover{
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
 </style>
 </head>
 <body>
@@ -117,23 +269,23 @@
     <div class="events">
 
       <div class="event">
-        <div class="datebox"><span class="day">Test</span><span class="mon">MAR</span></div>
+        <div class="datebox"><span class="day">[JJ]</span><span class="mon">[Mois]</span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
-          Mardi 38 Mars · 19h00 – 22h30<br>
+          Mardi [DATE] · 19h00 – 22h30<br>
           18 Boulevard du Maréchal Juin<br>
           13090 Aix-en-Provence
         </div>
       </div>
 
       <div class="event">
-        <div class="datebox"><span class="day">50</span><span class="mon">JAN</span></div>
+        <div class="datebox"><span class="day">[JJ]</span><span class="mon">[Mois]</span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
-          Mardi 50 Jancembre · 19h00 – 22h30<br>
-          Pif Paf Pouf
+          Mardi [DATE] · 19h00 – 22h30<br>
+          <span class="ph">[Adresse à Marseille — à compléter]</span>
         </div>
       </div>
 
@@ -159,6 +311,7 @@
         </a>
       </div>
     </footer>
+    <div class="note">Dates et adresses à compléter — page provisoire</div>
   </main>
 
 </body>
