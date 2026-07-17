@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QPJB — Générateur de hash</title>
+<style>
+  :root{
+    --bg1: #0f1420; --bg2: #161d2e; --card: rgba(255,255,255,0.045);
+    --card-border: rgba(255,255,255,0.09); --text: #eef1f8; --muted: #8b93a7;
+    --accent: #6ea8ff; --gold-soft: #d9c48f; --ok: #7fd8a8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh;
+    background: radial-gradient(1100px 600px at 15% -10%, rgba(110,168,255,0.14), transparent 60%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  .box{
+    max-width:440px; width:100%;
+    background: var(--card); border:1px solid var(--card-border); border-radius:16px;
+    padding:32px 28px; backdrop-filter: blur(14px);
+  }
+  h1{ font-size:18px; margin:0 0 6px; }
+  .sub{ font-size:12.5px; color:var(--muted); line-height:1.5; margin:0 0 22px; }
+  label{ display:block; font-size:12px; color:var(--muted); margin:0 0 6px; }
+  input{
+    width:100%; padding:11px 13px; border-radius:9px; border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04); color: var(--text); font-size:14px; font-family:inherit;
+  }
+  input:focus{ outline:none; border-color: var(--accent); }
+  button{
+    width:100%; margin-top:14px; font-family:inherit; font-size:14px; font-weight:700;
+    padding:12px 18px; border-radius:11px; border:none; cursor:pointer;
+    background: linear-gradient(135deg, var(--accent), #8fbcff); color:#0f1420;
+  }
+  .result{
+    margin-top:20px; padding:14px; border-radius:10px;
+    background: rgba(127,216,168,0.08); border:1px solid rgba(127,216,168,0.25);
+    display:none;
+  }
+  .result.show{ display:block; }
+  .result label{ color: var(--ok); margin-bottom:8px; }
+  .hash-value{
+    font-family: monospace; font-size:12.5px; word-break:break-all;
+    background: rgba(0,0,0,0.25); padding:10px; border-radius:7px; user-select:all;
+  }
+  .copy-hint{ font-size:11px; color:var(--muted); margin-top:8px; }
+  .note{ font-size:11.5px; color:rgba(255,255,255,0.3); margin-top:22px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+  <div class="box">
+    <h1>🔑 Générateur de mot de passe (hash)</h1>
+    <p class="sub">
+      Cet outil fonctionne entièrement dans ton navigateur, hors ligne — ton mot de passe
+      n'est envoyé nulle part. Tape-le, récupère le hash généré, et colle-le dans <code>admin.html</code>.
+    </p>
+
+    <label>Ton mot de passe choisi</label>
+    <input type="text" id="pwd" placeholder="Tape ton mot de passe ici">
+    <button onclick="genererHash()">Générer le hash</button>
+
+    <div class="result" id="result">
+      <label>Hash à copier dans admin.html :</label>
+      <div class="hash-value" id="hash-value"></div>
+      <div class="copy-hint">Clique sur le texte pour le sélectionner, puis copie-le (Ctrl+C).</div>
+    </div>
+
+    <p class="note">
+      Ce hash est une empreinte à sens unique : impossible de retrouver le mot de passe
+      à partir de lui. C'est ce hash (et non le mot de passe) qui sera visible dans le code de admin.html.
+    </p>
+  </div>
+
+<script>
+async function sha256(text){
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function genererHash(){
+  const pwd = document.getElementById('pwd').value;
+  const resultBox = document.getElementById('result');
+  if(!pwd){ return; }
+  try{
+    const hash = await sha256(pwd);
+    document.getElementById('hash-value').textContent = hash;
+    resultBox.classList.add('show');
+  }catch(e){
+    alert("Cet outil nécessite d'être ouvert sur une page en HTTPS (par ex. via GitHub Pages), pas en fichier local. Ouvre-le une fois mis en ligne sur ton site.");
+  }
+}
+
+document.getElementById('pwd').addEventListener('keydown', e => { if(e.key === 'Enter') genererHash(); });
+</script>
+
+</body>
+</html>

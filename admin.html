@@ -255,7 +255,6 @@
       <h2 id="lock-title">Accès protégé</h2>
       <p id="lock-desc">Entre le mot de passe d'accès pour ce panneau.</p>
       <input type="password" id="password-input" placeholder="Mot de passe" style="margin-bottom:12px;">
-      <input type="password" id="password-confirm" placeholder="Confirme le mot de passe" style="margin-bottom:12px; display:none;">
       <button class="btn-primary" style="width:100%;" onclick="handleLogin()" id="lock-btn">Entrer</button>
       <div class="status" id="lock-status" style="margin-top:10px;"></div>
     </div>
@@ -366,46 +365,20 @@
   </main>
 
 <script>
-/* ---------------- Connexion (verrou local à cet appareil) ---------------- */
-function simpleHashFallback(str){
-  // Repli utilisé quand crypto.subtle est indisponible (ex: fichier ouvert en local, hors HTTPS)
-  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
-  for(let i=0;i<str.length;i++){
-    const ch = str.charCodeAt(i);
-    h1 = Math.imul(h1 ^ ch, 2654435761);
-    h2 = Math.imul(h2 ^ ch, 1597334677);
-  }
-  h1 = Math.imul(h1 ^ (h1>>>16), 2246822507) ^ Math.imul(h2 ^ (h2>>>13), 3266489909);
-  h2 = Math.imul(h2 ^ (h2>>>16), 2246822507) ^ Math.imul(h1 ^ (h1>>>13), 3266489909);
-  return 'fallback-' + (4294967296*(2097151 & h2)+(h1>>>0)).toString(16);
-}
+/* ---------------------------------------------------------------
+   MOT DE PASSE DU PANNEAU — un seul mot de passe pour tout le monde.
+   Ci-dessous, on ne stocke QUE son empreinte (hash), jamais le mot de
+   passe en clair. Pour le changer :
+   1. Ouvre generateur_hash.html
+   2. Tape le nouveau mot de passe, récupère le hash affiché
+   3. Colle ce hash ci-dessous à la place de la valeur actuelle
+--------------------------------------------------------------- */
+const ADMIN_PASSWORD_HASH = "REMPLACE_MOI_PAR_TON_HASH";
 
 async function sha256(text){
-  if(window.crypto && window.crypto.subtle){
-    try{
-      const enc = new TextEncoder().encode(text);
-      const buf = await crypto.subtle.digest('SHA-256', enc);
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-    }catch(e){
-      // certains navigateurs exposent crypto.subtle mais le bloquent en contexte non sécurisé (file://)
-      return simpleHashFallback(text);
-    }
-  }
-  return simpleHashFallback(text);
-}
-
-function hasStoredHash(){
-  return !!localStorage.getItem('qpjb-admin-hash');
-}
-
-function initLockScreen(){
-  const confirmInput = document.getElementById('password-confirm');
-  if(!hasStoredHash()){
-    document.getElementById('lock-title').textContent = 'Créer un mot de passe';
-    document.getElementById('lock-desc').textContent = 'Première visite sur cet appareil : choisis un mot de passe pour protéger ce panneau.';
-    confirmInput.style.display = 'block';
-    document.getElementById('lock-btn').textContent = 'Créer et entrer';
-  }
+  const enc = new TextEncoder().encode(text);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
 async function handleLogin(){
@@ -414,21 +387,8 @@ async function handleLogin(){
   if(!pwd){ status.textContent = 'Entre un mot de passe.'; status.className='status err'; return; }
 
   try{
-    if(!hasStoredHash()){
-      const confirmPwd = document.getElementById('password-confirm').value;
-      if(pwd !== confirmPwd){
-        status.textContent = 'Les deux mots de passe ne correspondent pas.';
-        status.className='status err';
-        return;
-      }
-      const hash = await sha256(pwd);
-      localStorage.setItem('qpjb-admin-hash', hash);
-      unlock();
-      return;
-    }
-
     const hash = await sha256(pwd);
-    if(hash === localStorage.getItem('qpjb-admin-hash')){
+    if(hash === ADMIN_PASSWORD_HASH){
       sessionStorage.setItem('qpjb-admin-unlocked', '1');
       unlock();
     } else {
@@ -436,7 +396,7 @@ async function handleLogin(){
       status.className = 'status err';
     }
   } catch(err){
-    status.textContent = 'Erreur inattendue : ' + err.message;
+    status.textContent = "Erreur : ce panneau doit être ouvert sur une page en HTTPS (ex. GitHub Pages), pas en fichier local.";
     status.className = 'status err';
   }
 }
@@ -802,12 +762,10 @@ async function publier(){
 }
 
 /* ---------------- Démarrage ---------------- */
-initLockScreen();
 if(sessionStorage.getItem('qpjb-admin-unlocked') === '1'){
   unlock();
 }
 document.getElementById('password-input').addEventListener('keydown', e => { if(e.key === 'Enter') handleLogin(); });
-document.getElementById('password-confirm').addEventListener('keydown', e => { if(e.key === 'Enter') handleLogin(); });
 </script>
 
 </body>
