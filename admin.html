@@ -277,11 +277,11 @@
           <div class="row2">
             <div>
               <label>Propriétaire du repo (ton pseudo GitHub)</label>
-              <input type="text" id="gh-owner" placeholder="ex : qpjb-asso">
+              <input type="text" id="gh-owner" placeholder="capgui13">
             </div>
             <div>
               <label>Nom du repo</label>
-              <input type="text" id="gh-repo" placeholder="ex : qpjb-site">
+              <input type="text" id="gh-repo" placeholder="QPJB13">
             </div>
           </div>
           <div class="row2">
@@ -295,7 +295,12 @@
             </div>
           </div>
           <label>Jeton d'accès GitHub (Personal Access Token)</label>
-          <input type="password" id="gh-token" placeholder="ghp_...">
+          <div style="position:relative;">
+            <input type="password" id="gh-token" placeholder="ghp_..." style="padding-right:42px;">
+            <span onclick="toggleTokenVisibility()" id="token-eye"
+                  style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:15px; user-select:none;"
+                  title="Afficher / masquer le jeton">👁</span>
+          </div>
           <div class="hint">
             Crée un jeton « fine-grained » limité à ce seul repo, avec la permission
             <code>Contents: Read and write</code>. Voir les instructions en bas de page.
@@ -373,7 +378,7 @@
    2. Tape le nouveau mot de passe, récupère le hash affiché
    3. Colle ce hash ci-dessous à la place de la valeur actuelle
 --------------------------------------------------------------- */
-const ADMIN_PASSWORD_HASH = "6eda71e3af8c6c1735cb73a2d4075db4d3cd58f6b01acec78f6da6ff56d30250";
+const ADMIN_PASSWORD_HASH = "REMPLACE_MOI_PAR_TON_HASH";
 
 async function sha256(text){
   const enc = new TextEncoder().encode(text);
@@ -421,6 +426,18 @@ function toggleSettings(){
   document.getElementById('settings-body').classList.toggle('open');
 }
 
+function toggleTokenVisibility(){
+  const input = document.getElementById('gh-token');
+  const eye = document.getElementById('token-eye');
+  if(input.type === 'password'){
+    input.type = 'text';
+    eye.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    eye.textContent = '👁';
+  }
+}
+
 function saveSettings(){
   const settings = {
     owner: document.getElementById('gh-owner').value.trim(),
@@ -440,12 +457,14 @@ function chargerReglages(){
   try{
     const s = JSON.parse(localStorage.getItem('qpjb-gh-settings'));
     if(s){
-      document.getElementById('gh-owner').value = s.owner || '';
-      document.getElementById('gh-repo').value = s.repo || '';
+      document.getElementById('gh-owner').value = s.owner || 'capgui13';
+      document.getElementById('gh-repo').value = s.repo || 'QPJB13';
       document.getElementById('gh-branch').value = s.branch || 'main';
       document.getElementById('gh-path').value = s.path || 'index.html';
       document.getElementById('gh-token').value = s.token || '';
     } else {
+      document.getElementById('gh-owner').value = 'capgui13';
+      document.getElementById('gh-repo').value = 'QPJB13';
       document.getElementById('gh-branch').value = 'main';
       document.getElementById('gh-path').value = 'index.html';
     }
