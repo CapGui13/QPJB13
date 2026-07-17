@@ -182,6 +182,8 @@
     line-height:1.6;
   }
   .event-meta .ph{ color:#c8ad7f; font-style:italic; }
+  .addr-link{ color:inherit; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,0.25); transition: color 0.2s ease, border-color 0.2s ease; }
+  .addr-link:hover{ color: var(--accent); border-bottom-color: var(--accent); }
 
   .info-strip{
     display:flex;
@@ -284,8 +286,7 @@
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
           Mardi [DATE] · 19h00 – 22h30<br>
-          18 Boulevard du Maréchal Juin<br>
-          13090 Aix-en-Provence
+          <a href="https://www.google.com/maps/search/?api=1&query=18%20Boulevard%20du%20Mar%C3%A9chal%20Juin%2C%2013090%20Aix-en-Provence" target="_blank" rel="noopener" class="addr-link">18 Boulevard du Maréchal Juin<br>13090 Aix-en-Provence</a>
         </div>
       </div>
 
