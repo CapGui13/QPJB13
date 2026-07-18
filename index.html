@@ -1,36 +1,19 @@
 <!DOCTYPE html>
 <!--
-  ⚠️ IMPORTANT — SYNCHRONISATION
-  Ce fichier peut être ENTIÈREMENT RÉÉCRIT par le panneau admin.html
-  (bouton "Publier sur GitHub"), à partir du modèle codé en dur dans
-  la fonction buildHTML() de admin.html.
+  ℹ️ À PROPOS DE CE FICHIER
+  Cette page ne change (quasiment) plus jamais. Les informations qui
+  varient (dates des soirées, adresses) ne sont PAS ici : elles sont
+  dans data.json, chargé au chargement de la page par le script en bas.
 
-  Toute modification faite ICI directement (nouveau bloc, nouveau bouton,
-  nouveau style, etc.) sera PERDUE à la prochaine publication depuis le
-  panneau admin, sauf si elle est aussi reportée dans buildHTML()
-  (admin.html) — et idéalement dans editeur_QPJB.html pour rester cohérent.
-
-  Réflexe à avoir : après tout changement permanent sur cette page,
-  vérifier/mettre à jour le modèle correspondant dans admin.html.
+  Le panneau admin.html ne publie plus que data.json — il ne réécrit
+  plus jamais ce fichier. Tu peux donc modifier ce index.html directement
+  (structure, style, liens fixes comme le lien Maps d'Aix) sans risquer
+  qu'une future publication depuis l'admin l'efface.
 -->
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<script>
-  // Force un chargement frais une fois par visite (évite qu'un visiteur voie
-  // une version en cache avec d'anciennes dates après une mise à jour),
-  // SANS modifier l'URL affichée dans la barre d'adresse.
-  (function(){
-    if(!sessionStorage.getItem('qpjb-fresh-load')){
-      sessionStorage.setItem('qpjb-fresh-load', '1');
-      location.reload();
-    }
-  })();
-</script>
 <title>QPJB — Prochaines soirées</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -68,7 +51,6 @@
 
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
-  /* ---------- header (repris du style 1) ---------- */
   header{
     text-align:center;
     padding:56px 20px 10px;
@@ -117,7 +99,6 @@
     margin:34px 4px 22px;
   }
 
-  /* ---------- modules côte à côte (esthétique + police style 2) ---------- */
   .events{
     display:grid;
     grid-template-columns:1fr 1fr;
@@ -280,22 +261,22 @@
     <div class="events">
 
       <div class="event">
-        <div class="datebox"><span class="day">[JJ]</span><span class="mon">[Mois]</span></div>
+        <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
-          Mardi [DATE] · 19h00 – 22h30<br>
-          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link">18 Boulevard du Maréchal Juin<br>13090 Aix-en-Provence</a>
+          Mardi <span id="aix-date">[DATE]</span> · 19h00 – 22h30<br>
+          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
 
       <div class="event">
-        <div class="datebox"><span class="day">[JJ]</span><span class="mon">[Mois]</span></div>
+        <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
-          Mardi [DATE] · 19h00 – 22h30<br>
-          <span class="ph">[Adresse à Marseille — à compléter]</span>
+          Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
+          <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
         </div>
       </div>
 
@@ -321,9 +302,53 @@
         </a>
       </div>
     </footer>
-    <div class="note">Dates et adresses à compléter — page provisoire</div>
-    <div class="note">Dernière mise à jour : 17/07/2026 à 12h00</div>
+    <div class="note" id="last-update">Dernière mise à jour : —</div>
   </main>
+
+<script>
+// Charge les données variables (dates, adresses) depuis data.json.
+// Le "?t=" + timestamp force le navigateur à toujours aller chercher la
+// dernière version de data.json, sans jamais changer l'URL de la page.
+async function chargerDonnees(){
+  try{
+    const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) throw new Error('data.json introuvable');
+    const d = await res.json();
+
+    document.getElementById('aix-jj').textContent = d.aix.jj;
+    document.getElementById('aix-mois').textContent = d.aix.mois;
+    document.getElementById('aix-date').textContent = d.aix.date;
+    document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
+    document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
+
+    document.getElementById('mar-jj').textContent = d.marseille.jj;
+    document.getElementById('mar-mois').textContent = d.marseille.mois;
+    document.getElementById('mar-date').textContent = d.marseille.date;
+
+    const marWrap = document.getElementById('mar-address-wrap');
+    marWrap.textContent = '';
+    if(d.marseille.adresse){
+      const a = document.createElement('a');
+      a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.marseille.adresse);
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'addr-link';
+      a.textContent = d.marseille.adresse;
+      marWrap.appendChild(a);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'ph';
+      span.textContent = '[Adresse à Marseille — à compléter]';
+      marWrap.appendChild(span);
+    }
+
+    document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
+  }catch(e){
+    console.error('Impossible de charger data.json :', e);
+  }
+}
+chargerDonnees();
+</script>
 
 </body>
 </html>

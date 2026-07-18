@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <!--
-  ⚠️ IMPORTANT — SYNCHRONISATION
-  Ce panneau contient, dans la fonction buildHTML() du script en bas de
-  page, un MODÈLE COMPLET de la page publique index.html. C'est ce modèle
-  (et non le fichier index.html en ligne) qui est utilisé à chaque clic
-  sur "Publier sur GitHub" — il écrase donc entièrement index.html.
+  ℹ️ À PROPOS DE CE PANNEAU
+  Ce panneau ne publie plus que data.json (les dates et adresses).
+  Il ne réécrit plus jamais index.html : ce fichier vit sa vie de son
+  côté et peut être modifié directement sans risque d'être écrasé.
 
-  Conséquence : si index.html est modifié directement (nouveau bouton,
-  nouveau bloc, nouveau style...) sans que ce même changement soit reporté
-  ICI dans buildHTML(), la prochaine publication effacera ce changement.
-
-  Réflexe à avoir : toute modification permanente de la page publique doit
-  être faite à la fois sur index.html ET dans buildHTML() ci-dessous
-  (et idéalement dans editeur_QPJB.html pour rester cohérent).
+  La constante PAGE_TEMPLATE ci-dessous (dans le script en bas de page)
+  n'est utilisée QUE pour l'aperçu en direct dans ce panneau — elle n'est
+  jamais publiée. C'est une copie de la structure/style de index.html ;
+  si tu changes un jour la structure ou le style de index.html, mets
+  aussi à jour PAGE_TEMPLATE ici pour que l'aperçu reste fidèle (mais
+  ça n'affecte en rien le site publié, qui utilise le vrai index.html).
 -->
 <html lang="fr">
 <head>
@@ -319,7 +317,7 @@
               </div>
               <div>
                 <label>Chemin du fichier à mettre à jour</label>
-                <input type="text" id="gh-path" placeholder="index.html">
+                <input type="text" id="gh-path" placeholder="data.json">
               </div>
             </div>
             <label>Jeton d'accès GitHub (Personal Access Token)</label>
@@ -330,7 +328,9 @@
                     title="Afficher / masquer le jeton">👁</span>
             </div>
             <div class="hint">
-              Crée un jeton « fine-grained » limité à ce seul repo, avec la permission
+              Ce panneau publie uniquement <code>data.json</code> (les dates et adresses) —
+              il ne touche plus jamais à <code>index.html</code>. Crée un jeton « fine-grained »
+              limité à ce seul repo, avec la permission
               <code>Contents: Read and write</code>. Voir les instructions en bas de page.
             </div>
             <div class="actions">
@@ -528,50 +528,38 @@ function chargerReglages(){
       document.getElementById('gh-owner').value = s.owner || 'capgui13';
       document.getElementById('gh-repo').value = s.repo || 'QPJB13';
       document.getElementById('gh-branch').value = s.branch || 'main';
-      document.getElementById('gh-path').value = s.path || 'index.html';
+      document.getElementById('gh-path').value = s.path || 'data.json';
       document.getElementById('gh-token').value = s.token || '';
     } else {
       document.getElementById('gh-owner').value = 'capgui13';
       document.getElementById('gh-repo').value = 'QPJB13';
       document.getElementById('gh-branch').value = 'main';
-      document.getElementById('gh-path').value = 'index.html';
+      document.getElementById('gh-path').value = 'data.json';
     }
   }catch(e){}
 }
 
 /* ---------------- Génération du HTML final ---------------- */
-function buildHTML(v, forPreview){
+/* ---------------------------------------------------------------
+   APERÇU UNIQUEMENT — cette fonction sert à afficher l'aperçu en
+   direct dans l'iframe de ce panneau. Elle n'est JAMAIS publiée :
+   "Publier sur GitHub" envoie uniquement l'objet de données (JSON)
+   vers data.json (voir publier() plus bas). index.html n'est plus
+   jamais touché depuis ce panneau.
+--------------------------------------------------------------- */
+function buildPreviewHTML(v){
+  const aixMapsUrl = 'https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D';
+  const marMapsUrl = v.marseille.adresse ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(v.marseille.adresse) : null;
+  const marAddressHTML = marMapsUrl
+    ? `<a href="${marMapsUrl}" target="_blank" rel="noopener" class="addr-link">${v.marseille.adresse}</a>`
+    : `<span class="ph">[Adresse à Marseille — à compléter]</span>`;
+
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<script>
-  // Force un chargement frais une fois par visite (évite qu'un visiteur voie
-  // une version en cache avec d'anciennes dates après une mise à jour)
-  (function(){
-    if(!sessionStorage.getItem('qpjb-fresh-load')){
-      sessionStorage.setItem('qpjb-fresh-load', '1');
-      var url = new URL(location.href);
-      url.searchParams.set('_r', Date.now());
-      location.replace(url.toString());
-    }
-  })();
-<\/script>
 <title>QPJB — Prochaines soirées</title>
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<meta property="og:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
-<meta property="og:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
-<meta property="og:image" content="https://capgui13.github.io/QPJB13/og-image.png">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
-<meta name="twitter:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
-<meta name="twitter:image" content="https://capgui13.github.io/QPJB13/og-image.png">
 <style>
   :root{
     --bg1: #0f1420;
@@ -647,20 +635,9 @@ function buildHTML(v, forPreview){
   }
   .insta-link a:hover{ border-color: rgba(255,138,101,0.4); background: rgba(255,138,101,0.08); color: var(--accent2); }
   .note{ text-align:center; color:rgba(255,255,255,0.25); font-size:11.5px; margin-top:8px; font-style:italic; }
-  .admin-btn{
-    position:fixed; top:16px; right:16px; display:flex; align-items:center; gap:6px;
-    font-size:12px; color:var(--muted); text-decoration:none; padding:7px 12px;
-    border-radius:100px; border:1px solid var(--card-border); background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(10px); transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease; z-index:10;
-  }
-  .admin-btn:hover{ border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.08); color: var(--text); }
 </style>
 </head>
 <body>
-
-  ${!forPreview ? `
-  <a href="admin.html" class="admin-btn">⚙ Admin</a>
-  ` : ''}
 
   <header>
     <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
@@ -674,22 +651,22 @@ function buildHTML(v, forPreview){
     <div class="events">
 
       <div class="event">
-        <div class="datebox"><span class="day">${v.aixJJ}</span><span class="mon">${v.aixMois}</span></div>
+        <div class="datebox"><span class="day">${v.aix.jj}</span><span class="mon">${v.aix.mois}</span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
-          Mardi ${v.aixDate} · 19h00 – 22h30<br>
-          <a href="${v.aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">${v.aixAdresse1}<br>${v.aixAdresse2}</a>
+          Mardi ${v.aix.date} · 19h00 – 22h30<br>
+          <a href="${aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">${v.aix.adresse1}<br>${v.aix.adresse2}</a>
         </div>
       </div>
 
       <div class="event">
-        <div class="datebox"><span class="day">${v.marJJ}</span><span class="mon">${v.marMois}</span></div>
+        <div class="datebox"><span class="day">${v.marseille.jj}</span><span class="mon">${v.marseille.mois}</span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
-          Mardi ${v.marDate} · 19h00 – 22h30<br>
-          ${v.marMapsUrl ? `<a href="${v.marMapsUrl}" target="_blank" rel="noopener" class="addr-link">${v.marAdresse}</a>` : v.marAdresseHTML}
+          Mardi ${v.marseille.date} · 19h00 – 22h30<br>
+          ${marAddressHTML}
         </div>
       </div>
 
@@ -767,43 +744,38 @@ function formatLastUpdate(){
 
 function getValues(){
   const val = id => document.getElementById(id).value.trim();
-  const marAdresse = val('mar-adresse');
-  const marAdresseHTML = marAdresse ? marAdresse : '<span class="ph">[Adresse à Marseille — à compléter]</span>';
-
-  const aixAdresse1 = val('aix-adresse1') || '18 Boulevard du Maréchal Juin';
-  const aixAdresse2 = val('aix-adresse2') || '13090 Aix-en-Provence';
-  const aixMapsUrl = 'https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=43.5214349,5.4351089&heading=130.67&pitch=-13.83&fov=75';
-  const marMapsUrl = marAdresse ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(marAdresse) : null;
 
   return {
-    aixJJ: val('aix-jj') || '[JJ]',
-    aixMois: val('aix-mois') || '[Mois]',
-    aixDate: val('aix-date') || '[DATE]',
-    aixAdresse1,
-    aixAdresse2,
-    aixMapsUrl,
-    marJJ: val('mar-jj') || '[JJ]',
-    marMois: val('mar-mois') || '[Mois]',
-    marDate: val('mar-date') || '[DATE]',
-    marAdresse,
-    marAdresseHTML,
-    marMapsUrl,
+    aix: {
+      jj: val('aix-jj') || '[JJ]',
+      mois: val('aix-mois') || '[Mois]',
+      date: val('aix-date') || '[DATE]',
+      adresse1: val('aix-adresse1') || '18 Boulevard du Maréchal Juin',
+      adresse2: val('aix-adresse2') || '13090 Aix-en-Provence'
+    },
+    marseille: {
+      jj: val('mar-jj') || '[JJ]',
+      mois: val('mar-mois') || '[Mois]',
+      date: val('mar-date') || '[DATE]',
+      adresse: val('mar-adresse')
+    },
     lastUpdate: formatLastUpdate()
   };
 }
 
 function majApercu(){
-  const html = buildHTML(getValues(), true);
+  const html = buildPreviewHTML(getValues());
   document.getElementById('preview').srcdoc = html;
   sauvegarderFormulaire();
 }
 
 function genererFichier(){
-  const html = buildHTML(getValues());
-  const blob = new Blob([html], {type:'text/html'});
+  const data = getValues();
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = 'index.html';
+  a.href = url; a.download = 'data.json';
   document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
@@ -886,9 +858,10 @@ async function publier(){
       throw new Error(`Lecture impossible (${getRes.status}) : ${errData.message || 'erreur inconnue'}`);
     }
 
-    // 2. Construire le nouveau contenu
-    const html = buildHTML(getValues());
-    const content = toBase64Utf8(html);
+    // 2. Construire le nouveau contenu — uniquement les données (data.json),
+    //    plus jamais le HTML complet de index.html.
+    const json = JSON.stringify(getValues(), null, 2);
+    const content = toBase64Utf8(json);
 
     // 3. Envoyer la mise à jour
     const putRes = await fetch(apiUrl, {
