@@ -5,11 +5,11 @@
   Il ne réécrit plus jamais index.html : ce fichier vit sa vie de son
   côté et peut être modifié directement sans risque d'être écrasé.
 
-  La constante PAGE_TEMPLATE ci-dessous (dans le script en bas de page)
+  La fonction buildPreviewHTML() ci-dessous (dans le script en bas de page)
   n'est utilisée QUE pour l'aperçu en direct dans ce panneau — elle n'est
   jamais publiée. C'est une copie de la structure/style de index.html ;
   si tu changes un jour la structure ou le style de index.html, mets
-  aussi à jour PAGE_TEMPLATE ici pour que l'aperçu reste fidèle (mais
+  aussi à jour buildPreviewHTML() ici pour que l'aperçu reste fidèle (mais
   ça n'affecte en rien le site publié, qui utilise le vrai index.html).
 -->
 <html lang="fr">
