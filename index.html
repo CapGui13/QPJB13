@@ -22,13 +22,12 @@
 <meta http-equiv="Expires" content="0">
 <script>
   // Force un chargement frais une fois par visite (évite qu'un visiteur voie
-  // une version en cache avec d'anciennes dates après une mise à jour)
+  // une version en cache avec d'anciennes dates après une mise à jour),
+  // SANS modifier l'URL affichée dans la barre d'adresse.
   (function(){
     if(!sessionStorage.getItem('qpjb-fresh-load')){
       sessionStorage.setItem('qpjb-fresh-load', '1');
-      var url = new URL(location.href);
-      url.searchParams.set('_r', Date.now());
-      location.replace(url.toString());
+      location.reload();
     }
   })();
 </script>
