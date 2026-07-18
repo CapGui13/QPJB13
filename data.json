@@ -1,16 +1,16 @@
 {
   "aix": {
-    "jj": "21",
-    "mois": "JUIL",
-    "date": "21 juillet",
+    "jj": "[JJ]",
+    "mois": "[Mois]",
+    "date": "[DATE]",
     "adresse1": "18 Boulevard du Maréchal Juin",
     "adresse2": "13090 Aix-en-Provence"
   },
   "marseille": {
-    "jj": "28",
-    "mois": "JUIL",
-    "date": "28 juillet",
+    "jj": "[JJ]",
+    "mois": "[Mois]",
+    "date": "[DATE]",
     "adresse": ""
   },
-  "lastUpdate": "18/07/2026 à 11h08"
+  "lastUpdate": "17/07/2026 à 12h00"
 }
