@@ -714,7 +714,7 @@ function calculerProchainsMardis(){
 
   const premier = prochainMardi(new Date());
   const second = new Date(premier);
-  second.setDate(second.getDate() + 14);
+  second.setDate(second.getDate() + 7);
 
   function remplir(prefix, date){
     document.getElementById(prefix + '-jj').value = String(date.getDate()).padStart(2,'0');
