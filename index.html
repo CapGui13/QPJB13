@@ -1,16 +1,354 @@
-{
-  "aix": {
-    "jj": "21",
-    "mois": "JUIL",
-    "date": "21 juillet",
-    "adresse1": "18 Boulevard du Maréchal Juin",
-    "adresse2": "13090 Aix-en-Provence"
-  },
-  "marseille": {
-    "jj": "28",
-    "mois": "JUIL",
-    "date": "28 juillet",
-    "adresse": "Pif Paf Pouf"
-  },
-  "lastUpdate": "18/07/2026 à 11h02"
+<!DOCTYPE html>
+<!--
+  ℹ️ À PROPOS DE CE FICHIER
+  Cette page ne change (quasiment) plus jamais. Les informations qui
+  varient (dates des soirées, adresses) ne sont PAS ici : elles sont
+  dans data.json, chargé au chargement de la page par le script en bas.
+
+  Le panneau admin.html ne publie plus que data.json — il ne réécrit
+  plus jamais ce fichier. Tu peux donc modifier ce index.html directement
+  (structure, style, liens fixes comme le lien Maps d'Aix) sans risquer
+  qu'une future publication depuis l'admin l'efface.
+-->
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QPJB — Prochaines soirées</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<meta property="og:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
+<meta property="og:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
+<meta property="og:image" content="https://capgui13.github.io/QPJB13/og-image.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
+<meta name="twitter:description" content="Soirées cartes conviviales à Aix-en-Provence et Marseille, un mardi sur deux. Entrée libre, pizza offerte.">
+<meta name="twitter:image" content="https://capgui13.github.io/QPJB13/og-image.png">
+<style>
+  :root{
+    --bg1: #0f1420;
+    --bg2: #161d2e;
+    --card: rgba(255,255,255,0.045);
+    --card-border: rgba(255,255,255,0.09);
+    --text: #eef1f8;
+    --muted: #8b93a7;
+    --accent: #6ea8ff;
+    --accent2: #ff8a65;
+    --gold-soft: #d9c48f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(1100px 600px at 15% -10%, rgba(110,168,255,0.14), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,138,101,0.10), transparent 55%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  header{
+    text-align:center;
+    padding:56px 20px 10px;
+    animation: fadeIn 0.8s ease both;
+  }
+
+  .suits{
+    font-size:20px;
+    letter-spacing:14px;
+    color: var(--gold-soft);
+    margin-bottom:14px;
+  }
+  .suits span.red{ color: var(--accent2); }
+
+  h1{
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    font-weight:800;
+    font-size:clamp(34px, 6vw, 54px);
+    letter-spacing:2px;
+    margin:0;
+    color:#fbf5e8;
+    text-transform:uppercase;
+  }
+
+  .tagline{
+    margin-top:10px;
+    font-style:italic;
+    color: var(--gold-soft);
+    font-size:17px;
+    font-family: Georgia, 'Iowan Old Style', serif;
+  }
+
+  main{
+    max-width:700px;
+    margin:0 auto;
+    padding:10px 20px 70px;
+  }
+
+  .section-label{
+    text-align:center;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
+    text-transform:uppercase;
+    letter-spacing:3px;
+    font-size:14px;
+    color:var(--gold-soft);
+    margin:34px 4px 22px;
+  }
+
+  .events{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+  }
+  @media (max-width:600px){
+    .events{ grid-template-columns:1fr; }
+  }
+
+  .event{
+    background: var(--card);
+    border:1px solid var(--card-border);
+    border-radius:16px;
+    padding:22px 20px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    text-align:center;
+    animation: fadeIn 0.6s ease both;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+  .event:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.065);
+  }
+  .event:nth-child(2){ animation-delay:0.08s; }
+
+  .datebox{
+    width:64px; height:64px;
+    margin:0 auto 14px;
+    border-radius:14px;
+    background: rgba(255,255,255,0.06);
+    border:1px solid var(--card-border);
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    line-height:1.1;
+  }
+  .datebox .day{ font-size:22px; font-weight:700; }
+  .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+
+  .pill{
+    display:inline-block;
+    font-size:11px;
+    padding:3px 9px;
+    border-radius:100px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    margin-bottom:10px;
+  }
+  .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
+  .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
+
+  .event-title{
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 8px;
+  }
+  .event-meta{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.6;
+  }
+  .event-meta .ph{ color:#c8ad7f; font-style:italic; }
+  .addr-link{ color:inherit; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,0.25); transition: color 0.2s ease, border-color 0.2s ease; }
+  .addr-link:hover{ color: var(--accent); border-bottom-color: var(--accent); }
+
+  .info-strip{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:30px 4px 6px;
+  }
+  .chip{
+    font-size:12.5px;
+    padding:7px 13px;
+    border-radius:100px;
+    background: rgba(255,255,255,0.05);
+    border:1px solid var(--card-border);
+    color:var(--muted);
+  }
+
+  footer{
+    text-align:center;
+    margin-top:44px;
+    color:var(--muted);
+    font-size:13px;
+  }
+  footer a{ color:var(--accent); text-decoration:none; }
+
+  .insta-link{
+    margin-top:12px;
+  }
+  .insta-link a{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:var(--text);
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    padding:6px 14px;
+    border-radius:100px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+  }
+  .insta-link a:hover{
+    border-color: rgba(255,138,101,0.4);
+    background: rgba(255,138,101,0.08);
+    color: var(--accent2);
+  }
+
+  .note{
+    text-align:center;
+    color:rgba(255,255,255,0.25);
+    font-size:11.5px;
+    margin-top:8px;
+    font-style:italic;
+  }
+
+  .admin-btn{
+    position:fixed;
+    top:16px;
+    right:16px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:12px;
+    color:var(--muted);
+    text-decoration:none;
+    padding:7px 12px;
+    border-radius:100px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(10px);
+    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
+    z-index:10;
+  }
+  .admin-btn:hover{
+    border-color: rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+  <a href="admin.html" class="admin-btn">⚙ Admin</a>
+
+  <header>
+    <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
+    <h1>QPJB</h1>
+    <div class="tagline">Quai Provençal des Jeunes Bridgeurs</div>
+  </header>
+
+  <main>
+    <div class="section-label">Prochaines soirées cartes</div>
+
+    <div class="events">
+
+      <div class="event">
+        <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
+        <div class="pill aix">Aix-en-Provence</div>
+        <div class="event-title">Antenne d'Aix</div>
+        <div class="event-meta">
+          Mardi <span id="aix-date">[DATE]</span> · 19h00 – 22h30<br>
+          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
+        </div>
+      </div>
+
+      <div class="event">
+        <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
+        <div class="pill marseille">Marseille</div>
+        <div class="event-title">Antenne de Marseille</div>
+        <div class="event-meta">
+          Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
+          <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="info-strip">
+      <span class="chip">🍕 Pizza offerte</span>
+      <span class="chip">Entrée libre</span>
+      <span class="chip">Jeunes &amp; actifs</span>
+      <span class="chip">Un mardi sur deux, en alternance Aix / Marseille</span>
+    </div>
+
+    <footer>
+      Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a>
+      <div class="insta-link">
+        <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+          </svg>
+          <span>@qpjb_13</span>
+        </a>
+      </div>
+    </footer>
+    <div class="note" id="last-update">Dernière mise à jour : —</div>
+  </main>
+
+<script>
+// Charge les données variables (dates, adresses) depuis data.json.
+// Le "?t=" + timestamp force le navigateur à toujours aller chercher la
+// dernière version de data.json, sans jamais changer l'URL de la page.
+async function chargerDonnees(){
+  try{
+    const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) throw new Error('data.json introuvable');
+    const d = await res.json();
+
+    document.getElementById('aix-jj').textContent = d.aix.jj;
+    document.getElementById('aix-mois').textContent = d.aix.mois;
+    document.getElementById('aix-date').textContent = d.aix.date;
+    document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
+    document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
+
+    document.getElementById('mar-jj').textContent = d.marseille.jj;
+    document.getElementById('mar-mois').textContent = d.marseille.mois;
+    document.getElementById('mar-date').textContent = d.marseille.date;
+
+    const marWrap = document.getElementById('mar-address-wrap');
+    marWrap.textContent = '';
+    if(d.marseille.adresse){
+      const a = document.createElement('a');
+      a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.marseille.adresse);
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'addr-link';
+      a.textContent = d.marseille.adresse;
+      marWrap.appendChild(a);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'ph';
+      span.textContent = '[Adresse à Marseille — à compléter]';
+      marWrap.appendChild(span);
+    }
+
+    document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
+  }catch(e){
+    console.error('Impossible de charger data.json :', e);
+  }
 }
+chargerDonnees();
+</script>
+
+</body>
+</html>

@@ -316,8 +316,8 @@
                 <input type="text" id="gh-branch" placeholder="main">
               </div>
               <div>
-                <label>Chemin du fichier à mettre à jour</label>
-                <input type="text" id="gh-path" placeholder="data.json">
+                <label>Fichier mis à jour</label>
+                <input type="text" value="data.json" disabled style="opacity:0.6; cursor:not-allowed;">
               </div>
             </div>
             <label>Jeton d'accès GitHub (Personal Access Token)</label>
@@ -507,7 +507,7 @@ function saveSettings(){
     owner: document.getElementById('gh-owner').value.trim(),
     repo: document.getElementById('gh-repo').value.trim(),
     branch: document.getElementById('gh-branch').value.trim() || 'main',
-    path: document.getElementById('gh-path').value.trim() || 'index.html',
+    path: 'data.json', // figé en dur — ce panneau ne publie plus que data.json
     token: document.getElementById('gh-token').value.trim()
   };
   localStorage.setItem('qpjb-gh-settings', JSON.stringify(settings));
@@ -528,13 +528,11 @@ function chargerReglages(){
       document.getElementById('gh-owner').value = s.owner || 'capgui13';
       document.getElementById('gh-repo').value = s.repo || 'QPJB13';
       document.getElementById('gh-branch').value = s.branch || 'main';
-      document.getElementById('gh-path').value = s.path || 'data.json';
       document.getElementById('gh-token').value = s.token || '';
     } else {
       document.getElementById('gh-owner').value = 'capgui13';
       document.getElementById('gh-repo').value = 'QPJB13';
       document.getElementById('gh-branch').value = 'main';
-      document.getElementById('gh-path').value = 'data.json';
     }
   }catch(e){}
 }
@@ -819,7 +817,8 @@ async function publier(){
   const btn = document.getElementById('publish-btn');
 
   const settings = JSON.parse(localStorage.getItem('qpjb-gh-settings') || '{}');
-  const { owner, repo, branch, path, token } = settings;
+  const { owner, repo, branch, token } = settings;
+  const path = 'data.json'; // figé en dur — ignore toute ancienne valeur sauvegardée
 
   if(!owner || !repo || !token){
     status.textContent = "Renseigne d'abord les réglages GitHub (⚙️ en haut).";
