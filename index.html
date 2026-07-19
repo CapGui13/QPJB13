@@ -34,7 +34,7 @@
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #e2554f;
+    --accent2: #ff8a65;
     --gold-soft: #d9c48f;
   }
   *{box-sizing:border-box;}
@@ -141,16 +141,26 @@
 
   .pill{
     display:inline-block;
-    font-size:16px;
-    font-weight:800;
-    letter-spacing:0.2px;
-    padding:6px 18px;
+    font-size:11px;
+    padding:3px 9px;
     border-radius:100px;
-    margin:0 0 12px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    margin-bottom:10px;
   }
   .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
-  .pill.marseille{ background: rgba(226,85,79,0.16); color: var(--accent2); }
+  .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
 
+  .event-title{
+    display:inline-block;
+    font-size:16px;
+    font-weight:600;
+    margin:0 0 8px;
+    padding:6px 16px;
+    border-radius:100px;
+  }
+  .event-title--aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
+  .event-title--marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
   .event-meta{
     font-size:13px;
     color:var(--muted);
@@ -184,10 +194,35 @@
   }
   footer a{ color:var(--accent); text-decoration:none; }
 
-  .insta-link{
-    margin-top:12px;
+  .contact-row{
+    margin:20px auto 0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    max-width:700px;
   }
-  .insta-link a{
+  .contact-block{
+    text-align:center;
+    font-size:13px;
+    line-height:1.9;
+  }
+  .contact-block.aix{ color: var(--accent); }
+  .contact-block.marseille{ color: var(--accent2); }
+  .contact-block a{ color:inherit; text-decoration:none; border-bottom:1px dotted currentColor; }
+  .contact-block .ph{ font-style:italic; opacity:0.75; }
+
+  @media (max-width:600px){
+    .contact-row{ grid-template-columns:1fr; }
+  }
+
+  .social-row{
+    margin-top:12px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .social-btn{
     display:inline-flex;
     align-items:center;
     gap:6px;
@@ -201,10 +236,25 @@
     background: rgba(255,255,255,0.04);
     transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
   }
-  .insta-link a:hover{
+  .social-btn:hover{
     border-color: rgba(255,138,101,0.4);
     background: rgba(255,138,101,0.08);
     color: var(--accent2);
+  }
+  .icon{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:16px;
+    height:16px;
+    line-height:1;
+    flex-shrink:0;
+  }
+  .insta-icon{ color:#e1306c; }
+  .admin-icon{
+    font-size:15px;
+    color: var(--muted);
+    font-variant-emoji: text;
   }
 
   .note{
@@ -214,35 +264,9 @@
     margin-top:8px;
     font-style:italic;
   }
-
-  .admin-btn{
-    position:fixed;
-    top:16px;
-    right:16px;
-    display:flex;
-    align-items:center;
-    gap:6px;
-    font-size:12px;
-    color:var(--muted);
-    text-decoration:none;
-    padding:7px 12px;
-    border-radius:100px;
-    border:1px solid var(--card-border);
-    background: rgba(255,255,255,0.04);
-    backdrop-filter: blur(10px);
-    transition: border-color 0.25s ease, background 0.25s ease, color 0.25s ease;
-    z-index:10;
-  }
-  .admin-btn:hover{
-    border-color: rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.08);
-    color: var(--text);
-  }
 </style>
 </head>
 <body>
-
-  <a href="admin.html" class="admin-btn">⚙ Admin</a>
 
   <header>
     <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
@@ -257,16 +281,16 @@
 
       <div class="event">
         <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
-        <div class="pill aix">Aix-en-Provence</div>
+        <div class="event-title event-title--aix">Aix-en-Provence</div>
         <div class="event-meta">
           Mardi <span id="aix-date">[DATE]</span> · 19h00 – 22h30<br>
-          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link">📍 <span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
+          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
 
       <div class="event">
         <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
-        <div class="pill marseille">Marseille</div>
+        <div class="event-title event-title--marseille">Marseille</div>
         <div class="event-meta">
           Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
           <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
@@ -275,23 +299,30 @@
 
     </div>
 
-    <div class="info-strip">
-      <span class="chip">🍕 Pizza offerte</span>
-      <span class="chip">Entrée libre</span>
-      <span class="chip">Jeunes &amp; actifs</span>
-      <span class="chip">Un mardi sur deux, en alternance Aix / Marseille</span>
+    <div class="contact-row">
+      <div class="contact-block aix">
+        <div>Email : <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a></div>
+        <div>Tél : <span class="ph">[Téléphone à compléter]</span></div>
+      </div>
+      <div class="contact-block marseille">
+        <div>Email : <span class="ph">[Email à compléter]</span></div>
+        <div>Tél : <span class="ph">[Téléphone à compléter]</span></div>
+      </div>
     </div>
 
-    <footer>
-      Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">✉️ qpjb.aix@gmail.com</a>
-      <div class="insta-link">
-        <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<footer>
+      <div class="social-row">
+        <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener" class="social-btn">
+          <svg class="icon insta-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
           </svg>
           <span>@qpjb_13</span>
+        </a>
+        <a href="admin.html" class="social-btn">
+          <span class="icon admin-icon">⚙</span>
+          <span>Admin</span>
         </a>
       </div>
     </footer>
@@ -302,61 +333,21 @@
 // Charge les données variables (dates, adresses) depuis data.json.
 // Le "?t=" + timestamp force le navigateur à toujours aller chercher la
 // dernière version de data.json, sans jamais changer l'URL de la page.
-
-const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
-
-// Transforme une date ISO ("2026-09-08") en objet Date à minuit local
-// (évite les décalages de fuseau horaire liés à new Date("2026-09-08")).
-function parseISO(iso){
-  if(!iso) return null;
-  const [y, m, d] = iso.split('-').map(Number);
-  if(!y || !m || !d) return null;
-  return new Date(y, m - 1, d);
-}
-
-// Choisit automatiquement la bonne date pour une antenne : "current"
-// tant qu'elle n'est pas encore passée, puis "next" dès que "current"
-// est dans le passé — c'est ça qui permet au site de basculer tout seul
-// sans republier, une fois que le mardi suivant a été pré-rempli.
-function choisirDate(bloc){
-  const aujourdhui = new Date();
-  aujourdhui.setHours(0,0,0,0);
-
-  const dCurrent = parseISO(bloc.current);
-  const dNext = parseISO(bloc.next);
-
-  if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent;
-  if(dNext) return dNext;
-  return dCurrent; // repli : rien de mieux à afficher, même si passée
-}
-
-function formatDate(d){
-  if(!d) return { jj: '—', mois: '—', date: '—' };
-  return {
-    jj: String(d.getDate()),
-    mois: MOIS_ABBR[d.getMonth()],
-    date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()]
-  };
-}
-
 async function chargerDonnees(){
   try{
     const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
     if(!res.ok) throw new Error('data.json introuvable');
     const d = await res.json();
 
-    const aixDate = formatDate(choisirDate(d.aix));
-    document.getElementById('aix-jj').textContent = aixDate.jj;
-    document.getElementById('aix-mois').textContent = aixDate.mois;
-    document.getElementById('aix-date').textContent = aixDate.date;
+    document.getElementById('aix-jj').textContent = d.aix.jj;
+    document.getElementById('aix-mois').textContent = d.aix.mois;
+    document.getElementById('aix-date').textContent = d.aix.date;
     document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
     document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
 
-    const marDate = formatDate(choisirDate(d.marseille));
-    document.getElementById('mar-jj').textContent = marDate.jj;
-    document.getElementById('mar-mois').textContent = marDate.mois;
-    document.getElementById('mar-date').textContent = marDate.date;
+    document.getElementById('mar-jj').textContent = d.marseille.jj;
+    document.getElementById('mar-mois').textContent = d.marseille.mois;
+    document.getElementById('mar-date').textContent = d.marseille.date;
 
     const marWrap = document.getElementById('mar-address-wrap');
     marWrap.textContent = '';
@@ -366,7 +357,7 @@ async function chargerDonnees(){
       a.target = '_blank';
       a.rel = 'noopener';
       a.className = 'addr-link';
-      a.textContent = '📍 ' + d.marseille.adresse;
+      a.textContent = d.marseille.adresse;
       marWrap.appendChild(a);
     } else {
       const span = document.createElement('span');

@@ -43,7 +43,7 @@
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #e2554f;
+    --accent2: #ff8a65;
     --gold-soft: #d9c48f;
     --ok: #7fd8a8;
     --err: #ff8a8a;
@@ -162,8 +162,10 @@
   .group.group--marseille{ background: rgba(255,138,101,0.05); border-color: rgba(255,138,101,0.2); }
 
   .group-title{
-    font-size:13.5px;
-    font-weight:800;
+    font-size:15px;
+    font-weight:700;
+    color:#ffffff;
+    letter-spacing:0.2px;
     margin-bottom:14px;
     padding-bottom:10px;
     border-bottom:1px solid rgba(255,255,255,0.08);
@@ -181,7 +183,7 @@
     color:var(--muted);
     margin:10px 0 5px;
   }
-  input[type="text"], input[type="password"], input[type="number"]{
+  input[type="text"], input[type="password"], input[type="number"], select{
     width:100%;
     padding:10px 12px;
     border-radius:9px;
@@ -191,12 +193,70 @@
     font-size:14px;
     font-family:inherit;
   }
-  input:focus{ outline:none; border-color: var(--accent); }
+  input:focus, select:focus{ outline:none; border-color: var(--accent); }
   input.field-ok{ border-color: rgba(127,216,168,0.5); }
+  input:disabled{ opacity:0.5; cursor:not-allowed; }
   .required-star{ color: var(--accent2); }
   .field-status{ color: var(--ok); font-weight:700; }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .hint{ font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
+  .hint-inline{ font-size:11px; color:rgba(255,255,255,0.35); font-weight:400; text-transform:none; letter-spacing:0; }
+
+  /* Champ "mardi suivant" : calculé automatiquement, donc visuellement grisé
+     (mais reste cliquable/ajustable — ce n'est pas "disabled"). */
+  .champ-auto{ opacity:0.6; transition: opacity 0.2s ease; }
+  .champ-auto:focus-within, .champ-auto:hover{ opacity:1; }
+
+  /* ---------------- Sélecteur custom jour/mois ----------------
+     Remplace le <select> natif : garantit une ouverture vers le bas et
+     un texte toujours lisible (noir sur fond clair), indépendamment du
+     thème sombre du panneau ou du système d'exploitation. */
+  .cs-wrap{ position:relative; }
+  .cs-wrap select{ display:none; }
+  .cs-trigger{
+    width:100%;
+    padding:10px 12px;
+    border-radius:9px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.04);
+    color: var(--text);
+    font-size:14px;
+    font-family:inherit;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    user-select:none;
+  }
+  .cs-trigger::after{
+    content:"▾";
+    font-size:11px;
+    color:var(--muted);
+    margin-left:8px;
+  }
+  .cs-trigger:focus{ outline:none; border-color: var(--accent); }
+  .cs-list{
+    display:none;
+    position:absolute;
+    top:calc(100% + 4px);
+    left:0;
+    right:0;
+    max-height:220px;
+    overflow-y:auto;
+    background:#ffffff;
+    border-radius:9px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.35);
+    z-index:50;
+  }
+  .cs-list.open{ display:block; }
+  .cs-option{
+    padding:9px 12px;
+    font-size:14px;
+    color:#111318;
+    cursor:pointer;
+  }
+  .cs-option:hover{ background: rgba(110,168,255,0.15); }
+  .cs-option--active{ background: rgba(110,168,255,0.25); font-weight:700; }
 
   .actions{ margin-top:24px; display:flex; flex-direction:column; gap:10px; }
   button, a.btn-primary, a.btn-secondary, a.btn-publish, a.btn-danger{
@@ -359,26 +419,43 @@
           <div class="group group--aix">
             <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
             <label>Date de la prochaine soirée <span class="required-star">*</span> <span class="field-status" id="fs-aix-current"></span></label>
-            <input type="date" id="aix-current">
-            <label>Mardi suivant (pré-rempli à l'avance) <span class="field-status" id="fs-aix-next"></span></label>
-            <input type="date" id="aix-next">
-            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="basculerDate('aix')">⏭️ Le mardi suivant devient le prochain</button>
-            <div class="hint" style="margin:8px 0 0;">Tant que la date ci-dessus n'est pas passée, le site l'affiche. Dès qu'elle est dépassée, le site bascule automatiquement sur le mardi suivant — pense à le pré-remplir à l'avance.</div>
+            <div class="row2">
+              <div class="cs-wrap"><select id="aix-current-day"></select></div>
+              <div class="cs-wrap"><select id="aix-current-month"></select></div>
+            </div>
+            <input type="hidden" id="aix-current">
+            <label>Mardi suivant <span class="hint-inline">(calculé automatiquement, 14 jours après)</span> <span class="field-status" id="fs-aix-next"></span></label>
+            <div class="row2 champ-auto">
+              <div class="cs-wrap"><select id="aix-next-day"></select></div>
+              <div class="cs-wrap"><select id="aix-next-month"></select></div>
+            </div>
+            <input type="hidden" id="aix-next">
+            <div class="hint" style="margin:8px 0 0;">Tant que la date ci-dessus n'est pas passée, le site l'affiche. Dès qu'elle est dépassée, le site bascule automatiquement sur le mardi suivant, pré-rempli 14 jours après (ajustable si besoin).</div>
             <label style="margin-top:14px;">Adresse <span class="required-star">*</span> <span class="field-status" id="fs-aix-adresse1"></span></label>
-            <input type="text" id="aix-adresse1" placeholder="18 Boulevard du Maréchal Juin">
-            <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;">
+            <input type="text" id="aix-adresse1" placeholder="18 Boulevard du Maréchal Juin" disabled>
+            <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;" disabled>
+            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="toggleAdresseEdit('aix')" id="aix-adresse-btn">✏️ Modifier l'adresse</button>
+            <div class="hint" style="margin:8px 0 0;">L'adresse change rarement — elle reste verrouillée par défaut pour éviter une modification accidentelle.</div>
           </div>
 
           <div class="group group--marseille">
             <div class="group-title"><span class="dot marseille"></span> Soirée Marseille</div>
             <label>Date de la prochaine soirée <span class="required-star">*</span> <span class="field-status" id="fs-mar-current"></span></label>
-            <input type="date" id="mar-current">
-            <label>Mardi suivant (pré-rempli à l'avance) <span class="field-status" id="fs-mar-next"></span></label>
-            <input type="date" id="mar-next">
-            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="basculerDate('mar')">⏭️ Le mardi suivant devient le prochain</button>
-            <div class="hint" style="margin:8px 0 0;">Même principe : bascule automatique sur le mardi suivant une fois la date ci-dessus dépassée.</div>
+            <div class="row2">
+              <div class="cs-wrap"><select id="mar-current-day"></select></div>
+              <div class="cs-wrap"><select id="mar-current-month"></select></div>
+            </div>
+            <input type="hidden" id="mar-current">
+            <label>Mardi suivant <span class="hint-inline">(calculé automatiquement, 14 jours après)</span> <span class="field-status" id="fs-mar-next"></span></label>
+            <div class="row2 champ-auto">
+              <div class="cs-wrap"><select id="mar-next-day"></select></div>
+              <div class="cs-wrap"><select id="mar-next-month"></select></div>
+            </div>
+            <input type="hidden" id="mar-next">
+            <div class="hint" style="margin:8px 0 0;">Même principe : bascule automatique sur le mardi suivant une fois la date ci-dessus dépassée, pré-rempli 14 jours après (ajustable si besoin).</div>
             <label style="margin-top:14px;">Adresse (laisser vide si pas encore connue)</label>
-            <input type="text" id="mar-adresse" placeholder="Adresse à Marseille">
+            <input type="text" id="mar-adresse" placeholder="Adresse à Marseille" disabled>
+            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="toggleAdresseEdit('mar')" id="mar-adresse-btn">✏️ Modifier l'adresse</button>
           </div>
 
           <div class="hint" style="margin:-10px 0 16px;"><span class="required-star">*</span> champ requis</div>
@@ -393,7 +470,6 @@
         <!-- APERÇU -->
         <div class="preview-wrap">
           <div class="preview-label">Aperçu en direct</div>
-          <div class="hint" style="margin:-6px 0 10px;">💡 Les champs encadrés en vert peuvent être modifiés directement ici — clique dessus, tape, puis clique ailleurs pour valider.</div>
           <div class="preview-frame">
             <iframe id="preview" title="Aperçu"></iframe>
           </div>
@@ -557,8 +633,8 @@ function buildPreviewHTML(v){
   const aixMapsUrl = 'https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D';
   const marMapsUrl = v.marseille.adresse ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(v.marseille.adresse) : null;
   const marAddressHTML = marMapsUrl
-    ? `<a href="${marMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 <span class="editable" contenteditable="true" data-field="mar-adresse">${v.marseille.adresse}</span></a>`
-    : `<span class="ph">📍 <span class="editable" contenteditable="true" data-field="mar-adresse">[Adresse à Marseille — à compléter]</span></span>`;
+    ? `<a href="${marMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 ${v.marseille.adresse}</a>`
+    : `<span class="ph">📍 [Adresse à Marseille — à compléter]</span>`;
 
   // Même logique de bascule automatique que index.html : on affiche
   // "current" tant qu'elle n'est pas passée, sinon "next" — pour que
@@ -601,7 +677,7 @@ function buildPreviewHTML(v){
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #e2554f;
+    --accent2: #ff8a65;
     --gold-soft: #d9c48f;
   }
   *{box-sizing:border-box;}
@@ -666,22 +742,6 @@ function buildPreviewHTML(v){
   }
   .insta-link a:hover{ border-color: rgba(255,138,101,0.4); background: rgba(255,138,101,0.08); color: var(--accent2); }
   .note{ text-align:center; color:rgba(255,255,255,0.25); font-size:11.5px; margin-top:8px; font-style:italic; }
-  .editable{
-    border-radius: 5px;
-    padding: 1px 4px;
-    cursor: text;
-    box-shadow: inset 0 -1px 0 rgba(57,255,20,0.3);
-    transition: background 0.15s ease, box-shadow 0.15s ease;
-  }
-  .editable:hover{
-    background: rgba(57,255,20,0.12);
-    box-shadow: 0 0 0 1px rgba(57,255,20,0.45);
-  }
-  .editable:focus{
-    outline: none;
-    background: rgba(57,255,20,0.18);
-    box-shadow: 0 0 0 2px #39ff14;
-  }
 </style>
 </head>
 <body>
@@ -702,7 +762,7 @@ function buildPreviewHTML(v){
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-meta">
           Mardi ${aixDate.date} · 19h00 – 22h30<br>
-          <a href="${aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 <span class="editable" contenteditable="true" data-field="aix-adresse1">${v.aix.adresse1}</span><br><span class="editable" contenteditable="true" data-field="aix-adresse2">${v.aix.adresse2}</span></a>
+          <a href="${aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 ${v.aix.adresse1}<br>${v.aix.adresse2}</a>
         </div>
       </div>
 
@@ -744,23 +804,6 @@ function buildPreviewHTML(v){
 </html>`;
 }
 
-// Décale les dates d'une antenne : le "mardi suivant" pré-rempli devient
-// la date affichée, et le champ "suivant" se vide pour qu'on y mette la
-// date encore après. Pratique une fois qu'une soirée est passée.
-function basculerDate(prefix){
-  const current = document.getElementById(prefix + '-current');
-  const next = document.getElementById(prefix + '-next');
-  if(!next.value){
-    alert("Il n'y a pas encore de « mardi suivant » renseigné pour cette antenne.");
-    return;
-  }
-  current.value = next.value;
-  next.value = '';
-  validerChamp(current);
-  validerChamp(next);
-  majApercu();
-}
-
 function formatLastUpdate(){
   const d = new Date();
   const jour = String(d.getDate()).padStart(2,'0');
@@ -796,43 +839,6 @@ function majApercu(){
   sauvegarderFormulaire();
 }
 
-/* Rend l'aperçu directement éditable : les champs encadrés en vert dans
-   l'aperçu peuvent être cliqués et modifiés directement. Quand on quitte
-   le champ (ou qu'on appuie sur Entrée), la valeur est reportée dans le
-   vrai formulaire, comme si on l'avait tapée là-bas. On doit rattacher
-   ces écouteurs à chaque rechargement de l'aperçu, car changer le
-   "srcdoc" recrée entièrement le document à l'intérieur de l'iframe. */
-function attacherEditeursApercu(){
-  const iframe = document.getElementById('preview');
-  let doc;
-  try{ doc = iframe.contentDocument; }catch(e){ return; }
-  if(!doc) return;
-
-  doc.querySelectorAll('.editable').forEach(el => {
-    el.addEventListener('keydown', e => {
-      if(e.key === 'Enter'){ e.preventDefault(); el.blur(); }
-    });
-    el.addEventListener('click', e => {
-      if(el.closest('a')) e.preventDefault(); // évite d'ouvrir Google Maps en voulant éditer
-    });
-    el.addEventListener('blur', () => {
-      const field = el.getAttribute('data-field');
-      if(!field) return;
-      let val = el.textContent.trim();
-      if(field === 'mar-adresse' && val === '[Adresse à Marseille — à compléter]'){
-        val = '';
-      }
-      const input = document.getElementById(field);
-      if(input && input.value !== val){
-        input.value = val;
-        if(CHAMPS_REQUIS.includes(field)) validerChamp(input);
-        majApercu();
-      }
-    });
-  });
-}
-document.getElementById('preview').addEventListener('load', attacherEditeursApercu);
-
 function genererFichier(){
   const data = getValues();
   const json = JSON.stringify(data, null, 2);
@@ -864,6 +870,17 @@ function chargerFormulaire(){
       document.getElementById('aix-adresse2').value = '13090 Aix-en-Provence';
     }
   }catch(e){}
+  ['aix-current','aix-next','mar-current','mar-next'].forEach(prefix => {
+    remplirSelectDepuisISO(prefix, document.getElementById(prefix).value);
+  });
+  // Si le "mardi suivant" n'a jamais été renseigné, on le pré-remplit
+  // tout de suite avec current + 14 jours (sans écraser une valeur déjà
+  // enregistrée, potentiellement ajustée manuellement).
+  ['aix','mar'].forEach(ville => {
+    if(!document.getElementById(ville + '-next').value){
+      autoRemplirNext(ville);
+    }
+  });
 }
 
 /* Retour visuel immédiat : le champ se colore légèrement en vert et une
@@ -884,11 +901,247 @@ function validerTousLesChamps(){
   CHAMPS_REQUIS.forEach(id => validerChamp(document.getElementById(id)));
 }
 
+/* ---------------- Sélecteurs de date jour/mois (sans année) ----------------
+   Les visiteurs n'ont besoin de voir que le jour et le mois : l'année est
+   déduite automatiquement (prochaine occurrence de ce jour/mois à partir
+   d'aujourd'hui — ou après la date "current" pour le champ "next"). */
+const MOIS_NOMS_FORM = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+
+function remplirSelectsDate(prefix){
+  const daySel = document.getElementById(prefix + '-day');
+  const moisSel = document.getElementById(prefix + '-month');
+  if(!daySel || !moisSel) return;
+
+  // Mois : la liste démarre par le mois en cours, puis enchaîne dans
+  // l'ordre normal (retour à janvier une fois décembre passé).
+  const moisActuel = new Date().getMonth();
+  const ordreMois = Array.from({ length: 12 }, (_, i) => (moisActuel + i) % 12);
+  moisSel.innerHTML = '<option value="">Mois</option>' +
+    ordreMois.map(i => `<option value="${i}">${MOIS_NOMS_FORM[i]}</option>`).join('');
+
+  remplirJoursOrdre(prefix);
+}
+
+// Reconstruit la liste des jours pour ce champ : si le mois choisi est le
+// mois en cours, elle démarre par le jour d'aujourd'hui (puis enchaîne
+// dans l'ordre, avec retour au 1er). Sinon, ordre normal 1 → 31.
+function remplirJoursOrdre(prefix){
+  const daySel = document.getElementById(prefix + '-day');
+  const moisSel = document.getElementById(prefix + '-month');
+  if(!daySel || !moisSel) return;
+
+  const valeurActuelle = daySel.value;
+  const now = new Date();
+  const moisChoisi = moisSel.value === '' ? null : parseInt(moisSel.value, 10);
+
+  let ordreJours;
+  if(moisChoisi === now.getMonth()){
+    const jourActuel = now.getDate();
+    ordreJours = Array.from({ length: 31 }, (_, i) => ((jourActuel - 1 + i) % 31) + 1);
+  } else {
+    ordreJours = Array.from({ length: 31 }, (_, i) => i + 1);
+  }
+
+  daySel.innerHTML = '<option value="">Jour</option>' +
+    ordreJours.map(j => `<option value="${j}">${j}</option>`).join('');
+  daySel.value = valeurActuelle;
+  if(daySel._csRefresh) daySel._csRefresh();
+}
+
+function isoFromDate(d){
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+// Trouve la prochaine date correspondant à ce jour/mois, à partir de "apres"
+// (aujourd'hui par défaut) — bascule sur l'année suivante si besoin.
+function prochaineOccurrence(day, month, apres){
+  const base = new Date(apres);
+  base.setHours(0, 0, 0, 0);
+  let year = base.getFullYear();
+  let candidate = new Date(year, month, day);
+  if(candidate.getTime() < base.getTime()){
+    year += 1;
+    candidate = new Date(year, month, day);
+  }
+  return candidate;
+}
+
+// Recalcule la date ISO cachée (avec année) à partir des selects jour/mois.
+function majDateCalculee(prefix){
+  const daySel = document.getElementById(prefix + '-day');
+  const moisSel = document.getElementById(prefix + '-month');
+  const hidden = document.getElementById(prefix);
+
+  if(!daySel.value || !moisSel.value){ hidden.value = ''; return; }
+
+  const day = parseInt(daySel.value, 10);
+  const month = parseInt(moisSel.value, 10);
+
+  let apres = new Date();
+  apres.setHours(0, 0, 0, 0);
+
+  // Pour le champ "next", la date doit tomber après le champ "current"
+  if(prefix.endsWith('-next')){
+    const currentVal = document.getElementById(prefix.replace('-next', '-current')).value;
+    if(currentVal){
+      const [y, m, d] = currentVal.split('-').map(Number);
+      const apresCurrent = new Date(y, m - 1, d);
+      apresCurrent.setDate(apresCurrent.getDate() + 1);
+      if(apresCurrent.getTime() > apres.getTime()) apres = apresCurrent;
+    }
+  }
+
+  hidden.value = isoFromDate(prochaineOccurrence(day, month, apres));
+}
+
+// Remet les selects jour/mois à jour à partir d'une date ISO déjà connue
+// (au chargement du formulaire, ou après un calcul automatique).
+function remplirSelectDepuisISO(prefix, iso){
+  const daySel = document.getElementById(prefix + '-day');
+  const moisSel = document.getElementById(prefix + '-month');
+  const hidden = document.getElementById(prefix);
+  if(iso){
+    const [y, m, d] = iso.split('-').map(Number);
+    moisSel.value = m - 1;
+    remplirJoursOrdre(prefix);
+    daySel.value = d;
+    hidden.value = iso;
+  } else {
+    moisSel.value = '';
+    remplirJoursOrdre(prefix);
+    daySel.value = '';
+    hidden.value = '';
+  }
+  // Les valeurs ci-dessus sont posées par script (pas par l'utilisateur), donc
+  // aucun évènement natif "change" n'est déclenché : on rafraîchit à la main
+  // l'affichage du menu custom s'il a déjà été mis en place.
+  if(daySel._csRefresh) daySel._csRefresh();
+  if(moisSel._csRefresh) moisSel._csRefresh();
+}
+
+// Pré-remplit automatiquement le "mardi suivant" avec la date "current" + 14
+// jours. Reste ajustable manuellement ensuite (voir listeners plus bas).
+function autoRemplirNext(ville){
+  const currentHidden = document.getElementById(ville + '-current');
+  if(!currentHidden.value){
+    remplirSelectDepuisISO(ville + '-next', '');
+    return;
+  }
+  const [y, m, d] = currentHidden.value.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  dt.setDate(dt.getDate() + 14);
+  remplirSelectDepuisISO(ville + '-next', isoFromDate(dt));
+  validerChamp(document.getElementById(ville + '-next'));
+}
+
+['aix-current', 'aix-next', 'mar-current', 'mar-next'].forEach(remplirSelectsDate);
+
+/* ---------------- Sélecteur custom jour/mois ----------------
+   Remplace le <select> natif par un menu maison qui s'ouvre toujours
+   vers le bas et affiche un texte lisible (noir sur fond clair), quel
+   que soit le thème du système d'exploitation. */
+function enhanceSelect(select){
+  if(!select || select._csEnhanced) return;
+  select._csEnhanced = true;
+
+  const wrap = select.parentElement;
+  wrap.style.position = 'relative';
+
+  const trigger = document.createElement('div');
+  trigger.className = 'cs-trigger';
+  trigger.tabIndex = 0;
+
+  const list = document.createElement('div');
+  list.className = 'cs-list';
+
+  function label(){
+    const opt = select.options[select.selectedIndex];
+    return opt ? opt.textContent : '';
+  }
+
+  function render(){
+    trigger.textContent = label();
+    list.innerHTML = '';
+    Array.from(select.options).forEach(opt => {
+      const item = document.createElement('div');
+      item.className = 'cs-option' + (opt.value === select.value ? ' cs-option--active' : '');
+      item.textContent = opt.textContent;
+      item.addEventListener('click', () => {
+        select.value = opt.value;
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        close();
+      });
+      list.appendChild(item);
+    });
+  }
+
+  function open(){
+    document.querySelectorAll('.cs-list.open').forEach(l => { if(l !== list) l.classList.remove('open'); });
+    render();
+    list.classList.add('open');
+  }
+  function close(){ list.classList.remove('open'); }
+
+  trigger.addEventListener('click', () => {
+    list.classList.contains('open') ? close() : open();
+  });
+  trigger.addEventListener('keydown', e => {
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); list.classList.contains('open') ? close() : open(); }
+    if(e.key === 'Escape') close();
+  });
+  document.addEventListener('click', e => {
+    if(!wrap.contains(e.target)) close();
+  });
+
+  select.addEventListener('change', render);
+  select._csRefresh = render;
+
+  wrap.appendChild(trigger);
+  wrap.appendChild(list);
+  render();
+}
+
+['aix-current-day','aix-current-month','aix-next-day','aix-next-month',
+ 'mar-current-day','mar-current-month','mar-next-day','mar-next-month']
+  .forEach(id => enhanceSelect(document.getElementById(id)));
+
+/* ---------------- Verrouillage de l'adresse ----------------
+   L'adresse change rarement (contrairement à la date) : elle reste
+   grisée/verrouillée par défaut, et un bouton permet de la déverrouiller
+   ponctuellement pour la modifier. */
+function toggleAdresseEdit(prefix){
+  const ids = prefix === 'aix' ? ['aix-adresse1', 'aix-adresse2'] : ['mar-adresse'];
+  const btn = document.getElementById(prefix + '-adresse-btn');
+  const estVerrouille = document.getElementById(ids[0]).disabled;
+
+  ids.forEach(id => { document.getElementById(id).disabled = !estVerrouille; });
+  btn.textContent = estVerrouille ? "🔒 Verrouiller l'adresse" : "✏️ Modifier l'adresse";
+
+  if(estVerrouille) document.getElementById(ids[0]).focus();
+}
+
 /* attacher les listeners une fois le panneau visible (les éléments existent déjà dans le DOM) */
-['aix-current','aix-next','mar-current','mar-next'].forEach(id => {
-  const el = document.getElementById(id);
-  el.addEventListener('change', () => {
-    if(CHAMPS_REQUIS.includes(id)) validerChamp(el);
+['aix-current', 'aix-next', 'mar-current', 'mar-next'].forEach(prefix => {
+  document.getElementById(prefix + '-month').addEventListener('change', () => {
+    // Le choix du mois peut changer l'ordre optimisé des jours (jour du
+    // jour en tête si c'est le mois en cours, sinon ordre normal).
+    remplirJoursOrdre(prefix);
+    majDateCalculee(prefix);
+    if(CHAMPS_REQUIS.includes(prefix)) validerChamp(document.getElementById(prefix));
+    if(prefix.endsWith('-current')){
+      autoRemplirNext(prefix.replace('-current', ''));
+    }
+    majApercu();
+  });
+  document.getElementById(prefix + '-day').addEventListener('change', () => {
+    majDateCalculee(prefix);
+    if(CHAMPS_REQUIS.includes(prefix)) validerChamp(document.getElementById(prefix));
+    if(prefix.endsWith('-current')){
+      autoRemplirNext(prefix.replace('-current', ''));
+    }
     majApercu();
   });
 });
