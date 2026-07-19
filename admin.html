@@ -152,16 +152,21 @@
   }
 
   .group{
-    margin-bottom:22px;
-    padding-bottom:18px;
-    border-bottom:1px dashed var(--card-border);
+    margin-bottom:18px;
+    padding:16px 16px 14px;
+    border-radius:12px;
+    border:1px solid var(--card-border);
+    background: rgba(255,255,255,0.02);
   }
-  .group:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .group.group--aix{ background: rgba(110,168,255,0.05); border-color: rgba(110,168,255,0.2); }
+  .group.group--marseille{ background: rgba(255,138,101,0.05); border-color: rgba(255,138,101,0.2); }
 
   .group-title{
-    font-size:13px;
-    font-weight:700;
-    margin-bottom:12px;
+    font-size:13.5px;
+    font-weight:800;
+    margin-bottom:14px;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
     display:flex;
     align-items:center;
     gap:8px;
@@ -355,7 +360,7 @@
             🗓️ Calculer les 2 prochains mardis
           </button>
 
-          <div class="group">
+          <div class="group group--aix">
             <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
             <label>Jour du mois (ex : 22) <span class="required-star">*</span> <span class="field-status" id="fs-aix-jj"></span></label>
             <input type="text" id="aix-jj" placeholder="22">
@@ -368,7 +373,7 @@
             <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;">
           </div>
 
-          <div class="group">
+          <div class="group group--marseille">
             <div class="group-title"><span class="dot marseille"></span> Soirée Marseille</div>
             <label>Jour du mois (ex : 29) <span class="required-star">*</span> <span class="field-status" id="fs-mar-jj"></span></label>
             <input type="text" id="mar-jj" placeholder="29">
