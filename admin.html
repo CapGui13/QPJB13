@@ -189,6 +189,7 @@
   input:focus{ outline:none; border-color: var(--accent); }
   input.field-ok{ border-color: rgba(127,216,168,0.5); }
   .required-star{ color: var(--accent2); }
+  .field-status{ color: var(--ok); font-weight:700; }
   .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
   .hint{ font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; }
 
@@ -356,24 +357,24 @@
 
           <div class="group">
             <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
-            <label>Jour du mois (ex : 22) <span class="required-star">*</span></label>
+            <label>Jour du mois (ex : 22) <span class="required-star">*</span> <span class="field-status" id="fs-aix-jj"></span></label>
             <input type="text" id="aix-jj" placeholder="22">
-            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span></label>
+            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span> <span class="field-status" id="fs-aix-mois"></span></label>
             <input type="text" id="aix-mois" placeholder="JUIL">
-            <label>Date complète affichée (ex : 22 juillet) <span class="required-star">*</span></label>
+            <label>Date complète affichée (ex : 22 juillet) <span class="required-star">*</span> <span class="field-status" id="fs-aix-date"></span></label>
             <input type="text" id="aix-date" placeholder="22 juillet">
-            <label>Adresse <span class="required-star">*</span></label>
+            <label>Adresse <span class="required-star">*</span> <span class="field-status" id="fs-aix-adresse1"></span></label>
             <input type="text" id="aix-adresse1" placeholder="18 Boulevard du Maréchal Juin">
             <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;">
           </div>
 
           <div class="group">
             <div class="group-title"><span class="dot marseille"></span> Soirée Marseille</div>
-            <label>Jour du mois (ex : 29) <span class="required-star">*</span></label>
+            <label>Jour du mois (ex : 29) <span class="required-star">*</span> <span class="field-status" id="fs-mar-jj"></span></label>
             <input type="text" id="mar-jj" placeholder="29">
-            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span></label>
+            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span> <span class="field-status" id="fs-mar-mois"></span></label>
             <input type="text" id="mar-mois" placeholder="JUIL">
-            <label>Date complète affichée (ex : 29 juillet) <span class="required-star">*</span></label>
+            <label>Date complète affichée (ex : 29 juillet) <span class="required-star">*</span> <span class="field-status" id="fs-mar-date"></span></label>
             <input type="text" id="mar-date" placeholder="29 juillet">
             <label>Adresse (laisser vide si pas encore connue)</label>
             <input type="text" id="mar-adresse" placeholder="Adresse à Marseille">
@@ -571,12 +572,12 @@ function buildPreviewHTML(v){
     }
     return d;
   }
-  let aixSizeClass = '', marSizeClass = '';
+  let aixSizeClass = '', marSizeClass = '', eventsClass = '';
   const dateAix = parseEventDate(v.aix.jj, v.aix.mois);
   const dateMar = parseEventDate(v.marseille.jj, v.marseille.mois);
   if(dateAix && dateMar && dateAix.getTime() !== dateMar.getTime()){
-    if(dateAix.getTime() < dateMar.getTime()){ aixSizeClass = ' event--near'; marSizeClass = ' event--far'; }
-    else { marSizeClass = ' event--near'; aixSizeClass = ' event--far'; }
+    if(dateAix.getTime() < dateMar.getTime()){ aixSizeClass = ' event--near'; marSizeClass = ' event--far'; eventsClass = ' near-aix'; }
+    else { marSizeClass = ' event--near'; aixSizeClass = ' event--far'; eventsClass = ' near-mar'; }
   }
 
   return `<!DOCTYPE html>
@@ -623,8 +624,10 @@ function buildPreviewHTML(v){
     text-align:center; font-family: 'Futura', 'Trebuchet MS', sans-serif;
     text-transform:uppercase; letter-spacing:3px; font-size:14px; color:var(--gold-soft); margin:34px 4px 22px;
   }
-  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-  @media (max-width:600px){ .events{ grid-template-columns:1fr; } }
+  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; transition: grid-template-columns 0.35s ease; }
+  .events.near-aix{ grid-template-columns: 1.22fr 0.78fr; }
+  .events.near-mar{ grid-template-columns: 0.78fr 1.22fr; }
+  @media (max-width:600px){ .events, .events.near-aix, .events.near-mar{ grid-template-columns:1fr; } }
   .event{
     background: var(--card); border:1px solid var(--card-border); border-radius:16px;
     padding:22px 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
@@ -682,7 +685,7 @@ function buildPreviewHTML(v){
   <main>
     <div class="section-label">Prochaines soirées cartes</div>
 
-    <div class="events">
+    <div class="events${eventsClass}">
 
       <div class="event${aixSizeClass}">
         <div class="datebox"><span class="day">${v.aix.jj}</span><span class="mon">${v.aix.mois}</span></div>
@@ -836,12 +839,19 @@ function chargerFormulaire(){
   }catch(e){}
 }
 
-/* Retour visuel immédiat : le champ se colore légèrement en vert dès
-   qu'il est rempli (validation purement indicative, pas bloquante). */
+/* Retour visuel immédiat : le champ se colore légèrement en vert et une
+   coche ✓ apparaît à côté du label dès qu'il est rempli (validation
+   purement indicative, pas bloquante). */
 const CHAMPS_REQUIS = ['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date'];
 function validerChamp(el){
-  if(el.value.trim()){ el.classList.add('field-ok'); }
-  else { el.classList.remove('field-ok'); }
+  const status = document.getElementById('fs-' + el.id);
+  if(el.value.trim()){
+    el.classList.add('field-ok');
+    if(status) status.textContent = '✓';
+  } else {
+    el.classList.remove('field-ok');
+    if(status) status.textContent = '';
+  }
 }
 function validerTousLesChamps(){
   CHAMPS_REQUIS.forEach(id => validerChamp(document.getElementById(id)));

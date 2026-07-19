@@ -103,9 +103,12 @@
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:18px;
+    transition: grid-template-columns 0.35s ease;
   }
+  .events.near-aix{ grid-template-columns: 1.22fr 0.78fr; }
+  .events.near-mar{ grid-template-columns: 0.78fr 1.22fr; }
   @media (max-width:600px){
-    .events{ grid-template-columns:1fr; }
+    .events, .events.near-aix, .events.near-mar{ grid-template-columns:1fr; }
   }
 
   .event{
@@ -289,7 +292,7 @@
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
           Mardi <span id="aix-date"><span class="skeleton" style="width:70px;height:0.9em;"></span></span> · 19h00 – 22h30<br>
-          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link" aria-label="Ouvrir l'itinéraire vers le club d'Aix-en-Provence">📍 <span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
+          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link">📍 <span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
 
@@ -360,8 +363,10 @@ function parseEventDate(jj, mois){
 function appliquerTaillesRelatives(d){
   const cardAix = document.getElementById('card-aix');
   const cardMar = document.getElementById('card-mar');
+  const eventsWrap = document.querySelector('.events');
   cardAix.classList.remove('event--near', 'event--far');
   cardMar.classList.remove('event--near', 'event--far');
+  eventsWrap.classList.remove('near-aix', 'near-mar');
 
   const dateAix = parseEventDate(d.aix.jj, d.aix.mois);
   const dateMar = parseEventDate(d.marseille.jj, d.marseille.mois);
@@ -370,9 +375,11 @@ function appliquerTaillesRelatives(d){
   if(dateAix.getTime() < dateMar.getTime()){
     cardAix.classList.add('event--near');
     cardMar.classList.add('event--far');
+    eventsWrap.classList.add('near-aix');
   } else {
     cardMar.classList.add('event--near');
     cardAix.classList.add('event--far');
+    eventsWrap.classList.add('near-mar');
   }
 }
 
@@ -400,7 +407,6 @@ async function chargerDonnees(){
       a.target = '_blank';
       a.rel = 'noopener';
       a.className = 'addr-link';
-      a.setAttribute('aria-label', "Ouvrir l'itinéraire vers le club de Marseille");
       a.textContent = '📍 ' + d.marseille.adresse;
       marWrap.appendChild(a);
     } else {
