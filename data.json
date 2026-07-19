@@ -1,14 +1,30 @@
 {
   "aix": {
+<<<<<<< HEAD
     "current": "2026-07-21",
     "next": "2026-08-04",
+=======
+    "jj": "21",
+    "mois": "JUIL",
+    "date": "21 juillet",
+>>>>>>> d82ae73f0495ac8b58842435840f1597919c5d14
     "adresse1": "18 Boulevard du Maréchal Juin",
     "adresse2": "13090 Aix-en-Provence"
   },
   "marseille": {
+<<<<<<< HEAD
     "current": "2026-07-28",
     "next": "2026-08-11",
     "adresse": ""
   },
   "lastUpdate": "19/07/2026 à 12h00"
 }
+=======
+    "jj": "28",
+    "mois": "JUIL",
+    "date": "28 juillet",
+    "adresse": ""
+  },
+  "lastUpdate": "19/07/2026 à 10h31"
+}
+>>>>>>> d82ae73f0495ac8b58842435840f1597919c5d14
