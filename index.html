@@ -15,9 +15,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QPJB — Prochaines soirées</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <meta property="og:title" content="QPJB — Quai Provençal des Jeunes Bridgeurs">
@@ -69,10 +66,10 @@
   .suits span.red{ color: var(--accent2); }
 
   h1{
-    font-family: 'Fraunces', 'Trebuchet MS', serif;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
     font-weight:800;
     font-size:clamp(34px, 6vw, 54px);
-    letter-spacing:1px;
+    letter-spacing:2px;
     margin:0;
     color:#fbf5e8;
     text-transform:uppercase;
@@ -80,28 +77,11 @@
 
   .tagline{
     margin-top:10px;
-    font-family: 'Fraunces', Georgia, serif;
     font-style:italic;
-    font-weight:500;
     color: var(--gold-soft);
     font-size:17px;
+    font-family: Georgia, 'Iowan Old Style', serif;
   }
-
-  .ornament{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:12px;
-    margin:18px auto 0;
-    max-width:220px;
-  }
-  .ornament .rule{
-    flex:1;
-    height:1px;
-    background: linear-gradient(90deg, transparent, var(--card-border));
-  }
-  .ornament .rule.right{ background: linear-gradient(90deg, var(--card-border), transparent); }
-  .ornament .dot{ color: var(--gold-soft); font-size:11px; opacity:0.8; }
 
   main{
     max-width:700px;
@@ -111,8 +91,7 @@
 
   .section-label{
     text-align:center;
-    font-family: 'Fraunces', 'Trebuchet MS', serif;
-    font-weight:600;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
     text-transform:uppercase;
     letter-spacing:3px;
     font-size:14px;
@@ -130,8 +109,6 @@
   }
 
   .event{
-    position:relative;
-    overflow:hidden;
     background: var(--card);
     border:1px solid var(--card-border);
     border-radius:16px;
@@ -144,23 +121,10 @@
   }
   .event:hover{
     transform: translateY(-2px);
-    border-color: rgba(217,196,143,0.35);
+    border-color: rgba(255,255,255,0.18);
     background: rgba(255,255,255,0.065);
   }
   .event:nth-child(2){ animation-delay:0.08s; }
-
-  .event::after{
-    position:absolute;
-    right:-14px;
-    bottom:-30px;
-    font-size:128px;
-    line-height:1;
-    pointer-events:none;
-    z-index:0;
-  }
-  .event--aix::after{ content:'♠'; color: var(--accent); opacity:0.07; transform:rotate(-8deg); }
-  .event--marseille::after{ content:'♥'; color: var(--accent2); opacity:0.07; transform:rotate(8deg); }
-  .event > *{ position:relative; z-index:1; }
 
   .datebox{
     width:64px; height:64px;
@@ -168,7 +132,6 @@
     border-radius:14px;
     background: rgba(255,255,255,0.06);
     border:1px solid var(--card-border);
-    box-shadow: inset 0 0 0 3px rgba(217,196,143,0.08);
     display:flex; flex-direction:column;
     align-items:center; justify-content:center;
     line-height:1.1;
@@ -290,7 +253,6 @@
     <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
     <h1>QPJB</h1>
     <div class="tagline">Quai Provençal des Jeunes Bridgeurs</div>
-    <div class="ornament"><span class="rule"></span><span class="dot">◆</span><span class="rule right"></span></div>
   </header>
 
   <main>
@@ -298,7 +260,7 @@
 
     <div class="events">
 
-      <div class="event event--aix">
+      <div class="event">
         <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
@@ -308,7 +270,7 @@
         </div>
       </div>
 
-      <div class="event event--marseille">
+      <div class="event">
         <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>

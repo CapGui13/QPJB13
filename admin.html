@@ -558,9 +558,6 @@ function buildPreviewHTML(v){
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>QPJB — Prochaines soirées</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,500&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg1: #0f1420;
@@ -589,39 +586,29 @@ function buildPreviewHTML(v){
   .suits{ font-size:20px; letter-spacing:14px; color: var(--gold-soft); margin-bottom:14px; }
   .suits span.red{ color: var(--accent2); }
   h1{
-    font-family: 'Fraunces', 'Trebuchet MS', serif;
+    font-family: 'Futura', 'Trebuchet MS', sans-serif;
     font-weight:800; font-size:clamp(34px, 6vw, 54px);
-    letter-spacing:1px; margin:0; color:#fbf5e8; text-transform:uppercase;
+    letter-spacing:2px; margin:0; color:#fbf5e8; text-transform:uppercase;
   }
-  .tagline{ margin-top:10px; font-family: 'Fraunces', Georgia, serif; font-style:italic; font-weight:500; color: var(--gold-soft); font-size:17px; }
-  .ornament{ display:flex; align-items:center; justify-content:center; gap:12px; margin:18px auto 0; max-width:220px; }
-  .ornament .rule{ flex:1; height:1px; background: linear-gradient(90deg, transparent, var(--card-border)); }
-  .ornament .rule.right{ background: linear-gradient(90deg, var(--card-border), transparent); }
-  .ornament .dot{ color: var(--gold-soft); font-size:11px; opacity:0.8; }
+  .tagline{ margin-top:10px; font-style:italic; color: var(--gold-soft); font-size:17px; font-family: Georgia, 'Iowan Old Style', serif; }
   main{ max-width:700px; margin:0 auto; padding:10px 20px 70px; }
   .section-label{
-    text-align:center; font-family: 'Fraunces', 'Trebuchet MS', serif; font-weight:600;
+    text-align:center; font-family: 'Futura', 'Trebuchet MS', sans-serif;
     text-transform:uppercase; letter-spacing:3px; font-size:14px; color:var(--gold-soft); margin:34px 4px 22px;
   }
   .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
   @media (max-width:600px){ .events{ grid-template-columns:1fr; } }
   .event{
-    position:relative; overflow:hidden;
     background: var(--card); border:1px solid var(--card-border); border-radius:16px;
     padding:22px 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     text-align:center; animation: fadeIn 0.6s ease both;
     transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   }
-  .event:hover{ transform: translateY(-2px); border-color: rgba(217,196,143,0.35); background: rgba(255,255,255,0.065); }
+  .event:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.065); }
   .event:nth-child(2){ animation-delay:0.08s; }
-  .event::after{ position:absolute; right:-14px; bottom:-30px; font-size:128px; line-height:1; pointer-events:none; z-index:0; }
-  .event--aix::after{ content:'♠'; color: var(--accent); opacity:0.07; transform:rotate(-8deg); }
-  .event--marseille::after{ content:'♥'; color: var(--accent2); opacity:0.07; transform:rotate(8deg); }
-  .event > *{ position:relative; z-index:1; }
   .datebox{
     width:64px; height:64px; margin:0 auto 14px; border-radius:14px;
     background: rgba(255,255,255,0.06); border:1px solid var(--card-border);
-    box-shadow: inset 0 0 0 3px rgba(217,196,143,0.08);
     display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1;
   }
   .datebox .day{ font-size:22px; font-weight:700; }
@@ -654,7 +641,6 @@ function buildPreviewHTML(v){
     <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
     <h1>QPJB</h1>
     <div class="tagline">Quai Provençal des Jeunes Bridgeurs</div>
-    <div class="ornament"><span class="rule"></span><span class="dot">◆</span><span class="rule right"></span></div>
   </header>
 
   <main>
@@ -662,7 +648,7 @@ function buildPreviewHTML(v){
 
     <div class="events">
 
-      <div class="event event--aix">
+      <div class="event">
         <div class="datebox"><span class="day">${v.aix.jj}</span><span class="mon">${v.aix.mois}</span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
@@ -672,7 +658,7 @@ function buildPreviewHTML(v){
         </div>
       </div>
 
-      <div class="event event--marseille">
+      <div class="event">
         <div class="datebox"><span class="day">${v.marseille.jj}</span><span class="mon">${v.marseille.mois}</span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>
