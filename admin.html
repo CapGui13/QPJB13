@@ -43,7 +43,7 @@
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #ff8a65;
+    --accent2: #e2554f;
     --gold-soft: #d9c48f;
     --ok: #7fd8a8;
     --err: #ff8a8a;
@@ -356,32 +356,28 @@
         <div class="panel">
           <h2>Informations à modifier</h2>
 
-          <button class="btn-secondary" style="width:100%; margin-bottom:18px;" onclick="calculerProchainsMardis()">
-            🗓️ Calculer les 2 prochains mardis
-          </button>
-
           <div class="group group--aix">
             <div class="group-title"><span class="dot aix"></span> Soirée Aix-en-Provence</div>
-            <label>Jour du mois (ex : 22) <span class="required-star">*</span> <span class="field-status" id="fs-aix-jj"></span></label>
-            <input type="text" id="aix-jj" placeholder="22">
-            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span> <span class="field-status" id="fs-aix-mois"></span></label>
-            <input type="text" id="aix-mois" placeholder="JUIL">
-            <label>Date complète affichée (ex : 22 juillet) <span class="required-star">*</span> <span class="field-status" id="fs-aix-date"></span></label>
-            <input type="text" id="aix-date" placeholder="22 juillet">
-            <label>Adresse <span class="required-star">*</span> <span class="field-status" id="fs-aix-adresse1"></span></label>
+            <label>Date de la prochaine soirée <span class="required-star">*</span> <span class="field-status" id="fs-aix-current"></span></label>
+            <input type="date" id="aix-current">
+            <label>Mardi suivant (pré-rempli à l'avance) <span class="field-status" id="fs-aix-next"></span></label>
+            <input type="date" id="aix-next">
+            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="basculerDate('aix')">⏭️ Le mardi suivant devient le prochain</button>
+            <div class="hint" style="margin:8px 0 0;">Tant que la date ci-dessus n'est pas passée, le site l'affiche. Dès qu'elle est dépassée, le site bascule automatiquement sur le mardi suivant — pense à le pré-remplir à l'avance.</div>
+            <label style="margin-top:14px;">Adresse <span class="required-star">*</span> <span class="field-status" id="fs-aix-adresse1"></span></label>
             <input type="text" id="aix-adresse1" placeholder="18 Boulevard du Maréchal Juin">
             <input type="text" id="aix-adresse2" placeholder="13090 Aix-en-Provence" style="margin-top:8px;">
           </div>
 
           <div class="group group--marseille">
             <div class="group-title"><span class="dot marseille"></span> Soirée Marseille</div>
-            <label>Jour du mois (ex : 29) <span class="required-star">*</span> <span class="field-status" id="fs-mar-jj"></span></label>
-            <input type="text" id="mar-jj" placeholder="29">
-            <label>Mois abrégé, 3 lettres (ex : JUIL) <span class="required-star">*</span> <span class="field-status" id="fs-mar-mois"></span></label>
-            <input type="text" id="mar-mois" placeholder="JUIL">
-            <label>Date complète affichée (ex : 29 juillet) <span class="required-star">*</span> <span class="field-status" id="fs-mar-date"></span></label>
-            <input type="text" id="mar-date" placeholder="29 juillet">
-            <label>Adresse (laisser vide si pas encore connue)</label>
+            <label>Date de la prochaine soirée <span class="required-star">*</span> <span class="field-status" id="fs-mar-current"></span></label>
+            <input type="date" id="mar-current">
+            <label>Mardi suivant (pré-rempli à l'avance) <span class="field-status" id="fs-mar-next"></span></label>
+            <input type="date" id="mar-next">
+            <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="basculerDate('mar')">⏭️ Le mardi suivant devient le prochain</button>
+            <div class="hint" style="margin:8px 0 0;">Même principe : bascule automatique sur le mardi suivant une fois la date ci-dessus dépassée.</div>
+            <label style="margin-top:14px;">Adresse (laisser vide si pas encore connue)</label>
             <input type="text" id="mar-adresse" placeholder="Adresse à Marseille">
           </div>
 
@@ -389,7 +385,7 @@
 
           <div class="actions">
             <button class="btn-publish" onclick="publier()" id="publish-btn">🚀 Publier sur GitHub</button>
-            <a href="index.html" class="btn-secondary" style="text-align:center; text-decoration:none;">← Retour au site</a>
+            <a href="https://capgui13.github.io/QPJB13" class="btn-secondary" style="text-align:center; text-decoration:none;">← Retour au site</a>
             <div class="status" id="status"></div>
           </div>
         </div>
@@ -397,6 +393,7 @@
         <!-- APERÇU -->
         <div class="preview-wrap">
           <div class="preview-label">Aperçu en direct</div>
+          <div class="hint" style="margin:-6px 0 10px;">💡 Les champs encadrés en vert peuvent être modifiés directement ici — clique dessus, tape, puis clique ailleurs pour valider.</div>
           <div class="preview-frame">
             <iframe id="preview" title="Aperçu"></iframe>
           </div>
@@ -560,30 +557,34 @@ function buildPreviewHTML(v){
   const aixMapsUrl = 'https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D';
   const marMapsUrl = v.marseille.adresse ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(v.marseille.adresse) : null;
   const marAddressHTML = marMapsUrl
-    ? `<a href="${marMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 ${v.marseille.adresse}</a>`
-    : `<span class="ph">[Adresse à Marseille — à compléter]</span>`;
+    ? `<a href="${marMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 <span class="editable" contenteditable="true" data-field="mar-adresse">${v.marseille.adresse}</span></a>`
+    : `<span class="ph">📍 <span class="editable" contenteditable="true" data-field="mar-adresse">[Adresse à Marseille — à compléter]</span></span>`;
 
-  // Même logique que index.html : la soirée la plus proche est mise en
-  // avant, l'autre légèrement réduite (aperçu fidèle au site publié).
+  // Même logique de bascule automatique que index.html : on affiche
+  // "current" tant qu'elle n'est pas passée, sinon "next" — pour que
+  // l'aperçu montre exactement ce que les visiteurs verront.
+  const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
   const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
-  function parseEventDate(jj, mois){
-    const day = parseInt(jj, 10);
-    const idx = MOIS_ABBR.indexOf((mois || '').trim().toUpperCase());
-    if(isNaN(day) || idx === -1) return null;
-    const now = new Date();
-    let d = new Date(now.getFullYear(), idx, day);
-    if(d.getTime() < now.getTime() - 30*24*3600*1000){
-      d = new Date(now.getFullYear() + 1, idx, day);
-    }
-    return d;
+  function parseISO(iso){
+    if(!iso) return null;
+    const [y, m, d] = iso.split('-').map(Number);
+    if(!y || !m || !d) return null;
+    return new Date(y, m - 1, d);
   }
-  let aixSizeClass = '', marSizeClass = '', eventsClass = '';
-  const dateAix = parseEventDate(v.aix.jj, v.aix.mois);
-  const dateMar = parseEventDate(v.marseille.jj, v.marseille.mois);
-  if(dateAix && dateMar && dateAix.getTime() !== dateMar.getTime()){
-    if(dateAix.getTime() < dateMar.getTime()){ aixSizeClass = ' event--near'; marSizeClass = ' event--far'; eventsClass = ' near-aix'; }
-    else { marSizeClass = ' event--near'; aixSizeClass = ' event--far'; eventsClass = ' near-mar'; }
+  function choisirDate(bloc){
+    const aujourdhui = new Date(); aujourdhui.setHours(0,0,0,0);
+    const dCurrent = parseISO(bloc.current);
+    const dNext = parseISO(bloc.next);
+    if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent;
+    if(dNext) return dNext;
+    return dCurrent;
   }
+  function formatDate(d){
+    if(!d) return { jj: '[JJ]', mois: '[Mois]', date: '[DATE]' };
+    return { jj: String(d.getDate()), mois: MOIS_ABBR[d.getMonth()], date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()] };
+  }
+  const aixDate = formatDate(choisirDate(v.aix));
+  const marDate = formatDate(choisirDate(v.marseille));
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -600,7 +601,7 @@ function buildPreviewHTML(v){
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #ff8a65;
+    --accent2: #e2554f;
     --gold-soft: #d9c48f;
   }
   *{box-sizing:border-box;}
@@ -629,38 +630,26 @@ function buildPreviewHTML(v){
     text-align:center; font-family: 'Futura', 'Trebuchet MS', sans-serif;
     text-transform:uppercase; letter-spacing:3px; font-size:14px; color:var(--gold-soft); margin:34px 4px 22px;
   }
-  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; transition: grid-template-columns 0.35s ease; }
-  .events.near-aix{ grid-template-columns: 1.22fr 0.78fr; }
-  .events.near-mar{ grid-template-columns: 0.78fr 1.22fr; }
-  @media (max-width:600px){ .events, .events.near-aix, .events.near-mar{ grid-template-columns:1fr; } }
+  .events{ display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:600px){ .events{ grid-template-columns:1fr; } }
   .event{
     background: var(--card); border:1px solid var(--card-border); border-radius:16px;
     padding:22px 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
     text-align:center; animation: fadeIn 0.6s ease both;
-    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, padding 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   }
   .event:hover{ transform: translateY(-2px); border-color: rgba(255,255,255,0.18); background: rgba(255,255,255,0.065); }
   .event:nth-child(2){ animation-delay:0.08s; }
-  .event--near{ padding:27px 22px; }
-  .event--near .datebox{ width:72px; height:72px; }
-  .event--near .datebox .day{ font-size:25px; }
-  .event--near .event-title{ font-size:17px; }
-  .event--far{ padding:18px 16px; opacity:0.9; }
-  .event--far .datebox{ width:56px; height:56px; }
-  .event--far .datebox .day{ font-size:19px; }
-  .event--far .event-title{ font-size:15px; }
   .datebox{
     width:64px; height:64px; margin:0 auto 14px; border-radius:14px;
     background: rgba(255,255,255,0.06); border:1px solid var(--card-border);
     display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.1;
-    transition: width 0.3s ease, height 0.3s ease;
   }
-  .datebox .day{ font-size:22px; font-weight:700; transition: font-size 0.3s ease; }
+  .datebox .day{ font-size:22px; font-weight:700; }
   .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
-  .pill{ display:inline-block; font-size:11px; padding:3px 9px; border-radius:100px; font-weight:600; letter-spacing:0.3px; margin-bottom:10px; }
+  .pill{ display:inline-block; font-size:16px; font-weight:800; letter-spacing:0.2px; padding:6px 18px; border-radius:100px; margin:0 0 12px; }
   .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
-  .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
-  .event-title{ font-size:16px; font-weight:600; margin:0 0 8px; transition: font-size 0.3s ease; }
+  .pill.marseille{ background: rgba(226,85,79,0.16); color: var(--accent2); }
   .event-meta{ font-size:13px; color:var(--muted); line-height:1.6; }
   .event-meta .ph{ color:#c8ad7f; font-style:italic; }
   .addr-link{ color:inherit; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,0.25); transition: color 0.2s ease, border-color 0.2s ease; }
@@ -677,6 +666,22 @@ function buildPreviewHTML(v){
   }
   .insta-link a:hover{ border-color: rgba(255,138,101,0.4); background: rgba(255,138,101,0.08); color: var(--accent2); }
   .note{ text-align:center; color:rgba(255,255,255,0.25); font-size:11.5px; margin-top:8px; font-style:italic; }
+  .editable{
+    border-radius: 5px;
+    padding: 1px 4px;
+    cursor: text;
+    box-shadow: inset 0 -1px 0 rgba(57,255,20,0.3);
+    transition: background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .editable:hover{
+    background: rgba(57,255,20,0.12);
+    box-shadow: 0 0 0 1px rgba(57,255,20,0.45);
+  }
+  .editable:focus{
+    outline: none;
+    background: rgba(57,255,20,0.18);
+    box-shadow: 0 0 0 2px #39ff14;
+  }
 </style>
 </head>
 <body>
@@ -690,24 +695,22 @@ function buildPreviewHTML(v){
   <main>
     <div class="section-label">Prochaines soirées cartes</div>
 
-    <div class="events${eventsClass}">
+    <div class="events">
 
-      <div class="event${aixSizeClass}">
-        <div class="datebox"><span class="day">${v.aix.jj}</span><span class="mon">${v.aix.mois}</span></div>
+      <div class="event">
+        <div class="datebox"><span class="day">${aixDate.jj}</span><span class="mon">${aixDate.mois}</span></div>
         <div class="pill aix">Aix-en-Provence</div>
-        <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
-          Mardi ${v.aix.date} · 19h00 – 22h30<br>
-          <a href="${aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 ${v.aix.adresse1}<br>${v.aix.adresse2}</a>
+          Mardi ${aixDate.date} · 19h00 – 22h30<br>
+          <a href="${aixMapsUrl}" target="_blank" rel="noopener" class="addr-link">📍 <span class="editable" contenteditable="true" data-field="aix-adresse1">${v.aix.adresse1}</span><br><span class="editable" contenteditable="true" data-field="aix-adresse2">${v.aix.adresse2}</span></a>
         </div>
       </div>
 
-      <div class="event${marSizeClass}">
-        <div class="datebox"><span class="day">${v.marseille.jj}</span><span class="mon">${v.marseille.mois}</span></div>
+      <div class="event">
+        <div class="datebox"><span class="day">${marDate.jj}</span><span class="mon">${marDate.mois}</span></div>
         <div class="pill marseille">Marseille</div>
-        <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
-          Mardi ${v.marseille.date} · 19h00 – 22h30<br>
+          Mardi ${marDate.date} · 19h00 – 22h30<br>
           ${marAddressHTML}
         </div>
       </div>
@@ -741,37 +744,21 @@ function buildPreviewHTML(v){
 </html>`;
 }
 
-function calculerProchainsMardis(){
-  const moisAbbr = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
-  const moisComplet = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
-
-  function prochainMardi(fromDate){
-    const d = new Date(fromDate);
-    const day = d.getDay(); // 0=dimanche, 1=lundi, 2=mardi...
-    let diff = (2 - day + 7) % 7;
-    if(diff === 0) diff = 7; // si on est déjà mardi, on prend le suivant
-    d.setDate(d.getDate() + diff);
-    return d;
+// Décale les dates d'une antenne : le "mardi suivant" pré-rempli devient
+// la date affichée, et le champ "suivant" se vide pour qu'on y mette la
+// date encore après. Pratique une fois qu'une soirée est passée.
+function basculerDate(prefix){
+  const current = document.getElementById(prefix + '-current');
+  const next = document.getElementById(prefix + '-next');
+  if(!next.value){
+    alert("Il n'y a pas encore de « mardi suivant » renseigné pour cette antenne.");
+    return;
   }
-
-  const premier = prochainMardi(new Date());
-  const second = new Date(premier);
-  second.setDate(second.getDate() + 7);
-
-  function remplir(prefix, date){
-    document.getElementById(prefix + '-jj').value = String(date.getDate()).padStart(2,'0');
-    document.getElementById(prefix + '-mois').value = moisAbbr[date.getMonth()];
-    document.getElementById(prefix + '-date').value = date.getDate() + ' ' + moisComplet[date.getMonth()];
-  }
-
-  remplir('aix', premier);
-  remplir('mar', second);
+  current.value = next.value;
+  next.value = '';
+  validerChamp(current);
+  validerChamp(next);
   majApercu();
-
-  const status = document.getElementById('status');
-  status.textContent = "✓ Dates calculées — vérifie que Aix/Marseille correspondent bien à l'ordre attendu";
-  status.className = 'status ok';
-  setTimeout(()=> status.textContent='', 5000);
 }
 
 function formatLastUpdate(){
@@ -789,16 +776,14 @@ function getValues(){
 
   return {
     aix: {
-      jj: val('aix-jj') || '[JJ]',
-      mois: val('aix-mois') || '[Mois]',
-      date: val('aix-date') || '[DATE]',
+      current: val('aix-current'),
+      next: val('aix-next'),
       adresse1: val('aix-adresse1') || '18 Boulevard du Maréchal Juin',
       adresse2: val('aix-adresse2') || '13090 Aix-en-Provence'
     },
     marseille: {
-      jj: val('mar-jj') || '[JJ]',
-      mois: val('mar-mois') || '[Mois]',
-      date: val('mar-date') || '[DATE]',
+      current: val('mar-current'),
+      next: val('mar-next'),
       adresse: val('mar-adresse')
     },
     lastUpdate: formatLastUpdate()
@@ -810,6 +795,43 @@ function majApercu(){
   document.getElementById('preview').srcdoc = html;
   sauvegarderFormulaire();
 }
+
+/* Rend l'aperçu directement éditable : les champs encadrés en vert dans
+   l'aperçu peuvent être cliqués et modifiés directement. Quand on quitte
+   le champ (ou qu'on appuie sur Entrée), la valeur est reportée dans le
+   vrai formulaire, comme si on l'avait tapée là-bas. On doit rattacher
+   ces écouteurs à chaque rechargement de l'aperçu, car changer le
+   "srcdoc" recrée entièrement le document à l'intérieur de l'iframe. */
+function attacherEditeursApercu(){
+  const iframe = document.getElementById('preview');
+  let doc;
+  try{ doc = iframe.contentDocument; }catch(e){ return; }
+  if(!doc) return;
+
+  doc.querySelectorAll('.editable').forEach(el => {
+    el.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){ e.preventDefault(); el.blur(); }
+    });
+    el.addEventListener('click', e => {
+      if(el.closest('a')) e.preventDefault(); // évite d'ouvrir Google Maps en voulant éditer
+    });
+    el.addEventListener('blur', () => {
+      const field = el.getAttribute('data-field');
+      if(!field) return;
+      let val = el.textContent.trim();
+      if(field === 'mar-adresse' && val === '[Adresse à Marseille — à compléter]'){
+        val = '';
+      }
+      const input = document.getElementById(field);
+      if(input && input.value !== val){
+        input.value = val;
+        if(CHAMPS_REQUIS.includes(field)) validerChamp(input);
+        majApercu();
+      }
+    });
+  });
+}
+document.getElementById('preview').addEventListener('load', attacherEditeursApercu);
 
 function genererFichier(){
   const data = getValues();
@@ -823,7 +845,7 @@ function genererFichier(){
 }
 
 function sauvegarderFormulaire(){
-  const ids = ['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date','mar-adresse'];
+  const ids = ['aix-current','aix-next','aix-adresse1','aix-adresse2','mar-current','mar-next','mar-adresse'];
   const data = {};
   ids.forEach(id => data[id] = document.getElementById(id).value);
   localStorage.setItem('qpjb-editeur', JSON.stringify(data));
@@ -847,7 +869,7 @@ function chargerFormulaire(){
 /* Retour visuel immédiat : le champ se colore légèrement en vert et une
    coche ✓ apparaît à côté du label dès qu'il est rempli (validation
    purement indicative, pas bloquante). */
-const CHAMPS_REQUIS = ['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date'];
+const CHAMPS_REQUIS = ['aix-current','aix-adresse1','aix-adresse2','mar-current'];
 function validerChamp(el){
   const status = document.getElementById('fs-' + el.id);
   if(el.value.trim()){
@@ -862,16 +884,21 @@ function validerTousLesChamps(){
   CHAMPS_REQUIS.forEach(id => validerChamp(document.getElementById(id)));
 }
 
-document.querySelectorAll('#aix-jj,#aix-mois,#aix-date,#aix-adresse1,#aix-adresse2,#mar-jj,#mar-mois,#mar-date,#mar-adresse')
-  .forEach(el => {});
-
 /* attacher les listeners une fois le panneau visible (les éléments existent déjà dans le DOM) */
-['aix-jj','aix-mois','aix-date','aix-adresse1','aix-adresse2','mar-jj','mar-mois','mar-date','mar-adresse']
-  .forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('input', majApercu);
-    if(CHAMPS_REQUIS.includes(id)) el.addEventListener('input', () => validerChamp(el));
+['aix-current','aix-next','mar-current','mar-next'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('change', () => {
+    if(CHAMPS_REQUIS.includes(id)) validerChamp(el);
+    majApercu();
   });
+});
+['aix-adresse1','aix-adresse2','mar-adresse'].forEach(id => {
+  const el = document.getElementById(id);
+  el.addEventListener('input', () => {
+    if(CHAMPS_REQUIS.includes(id)) validerChamp(el);
+    majApercu();
+  });
+});
 
 /* ---------------- Publication sur GitHub ---------------- */
 function toBase64Utf8(str){

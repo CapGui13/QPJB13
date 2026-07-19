@@ -34,7 +34,7 @@
     --text: #eef1f8;
     --muted: #8b93a7;
     --accent: #6ea8ff;
-    --accent2: #ff8a65;
+    --accent2: #e2554f;
     --gold-soft: #d9c48f;
   }
   *{box-sizing:border-box;}
@@ -103,12 +103,9 @@
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:18px;
-    transition: grid-template-columns 0.35s ease;
   }
-  .events.near-aix{ grid-template-columns: 1.22fr 0.78fr; }
-  .events.near-mar{ grid-template-columns: 0.78fr 1.22fr; }
   @media (max-width:600px){
-    .events, .events.near-aix, .events.near-mar{ grid-template-columns:1fr; }
+    .events{ grid-template-columns:1fr; }
   }
 
   .event{
@@ -120,7 +117,7 @@
     -webkit-backdrop-filter: blur(14px);
     text-align:center;
     animation: fadeIn 0.6s ease both;
-    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, padding 0.3s ease, opacity 0.3s ease;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
   }
   .event:hover{
     transform: translateY(-2px);
@@ -128,16 +125,6 @@
     background: rgba(255,255,255,0.065);
   }
   .event:nth-child(2){ animation-delay:0.08s; }
-
-  /* La soirée la plus proche est légèrement mise en avant, l'autre légèrement réduite */
-  .event--near{ padding:27px 22px; }
-  .event--near .datebox{ width:72px; height:72px; }
-  .event--near .datebox .day{ font-size:25px; }
-  .event--near .event-title{ font-size:17px; }
-  .event--far{ padding:18px 16px; opacity:0.9; }
-  .event--far .datebox{ width:56px; height:56px; }
-  .event--far .datebox .day{ font-size:19px; }
-  .event--far .event-title{ font-size:15px; }
 
   .datebox{
     width:64px; height:64px;
@@ -148,29 +135,22 @@
     display:flex; flex-direction:column;
     align-items:center; justify-content:center;
     line-height:1.1;
-    transition: width 0.3s ease, height 0.3s ease;
   }
-  .datebox .day{ font-size:22px; font-weight:700; transition: font-size 0.3s ease; }
+  .datebox .day{ font-size:22px; font-weight:700; }
   .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
 
   .pill{
     display:inline-block;
-    font-size:11px;
-    padding:3px 9px;
+    font-size:16px;
+    font-weight:800;
+    letter-spacing:0.2px;
+    padding:6px 18px;
     border-radius:100px;
-    font-weight:600;
-    letter-spacing:0.3px;
-    margin-bottom:10px;
+    margin:0 0 12px;
   }
   .pill.aix{ background: rgba(110,168,255,0.16); color: var(--accent); }
-  .pill.marseille{ background: rgba(255,138,101,0.16); color: var(--accent2); }
+  .pill.marseille{ background: rgba(226,85,79,0.16); color: var(--accent2); }
 
-  .event-title{
-    font-size:16px;
-    font-weight:600;
-    margin:0 0 8px;
-    transition: font-size 0.3s ease;
-  }
   .event-meta{
     font-size:13px;
     color:var(--muted);
@@ -275,20 +255,18 @@
 
     <div class="events">
 
-      <div class="event" id="card-aix">
+      <div class="event">
         <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
         <div class="pill aix">Aix-en-Provence</div>
-        <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
           Mardi <span id="aix-date">[DATE]</span> · 19h00 – 22h30<br>
           <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link">📍 <span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
 
-      <div class="event" id="card-mar">
+      <div class="event">
         <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
         <div class="pill marseille">Marseille</div>
-        <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
           Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
           <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
@@ -325,51 +303,41 @@
 // Le "?t=" + timestamp force le navigateur à toujours aller chercher la
 // dernière version de data.json, sans jamais changer l'URL de la page.
 
+const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
 
-// Devine une vraie date (jour+mois+année) à partir des champs texte
-// jj/mois de data.json, pour pouvoir comparer Aix et Marseille entre eux.
-// Retourne null si le format ne correspond pas (pas grave : dans ce cas
-// on n'affiche simplement pas de différence de taille entre les cartes).
-function parseEventDate(jj, mois){
-  const day = parseInt(jj, 10);
-  const idx = MOIS_ABBR.indexOf((mois || '').trim().toUpperCase());
-  if(isNaN(day) || idx === -1) return null;
-  const now = new Date();
-  let d = new Date(now.getFullYear(), idx, day);
-  // Si la date semble être passée depuis plus d'un mois, elle concerne
-  // probablement l'année suivante (utile en fin d'année civile).
-  if(d.getTime() < now.getTime() - 30*24*3600*1000){
-    d = new Date(now.getFullYear() + 1, idx, day);
-  }
-  return d;
+// Transforme une date ISO ("2026-09-08") en objet Date à minuit local
+// (évite les décalages de fuseau horaire liés à new Date("2026-09-08")).
+function parseISO(iso){
+  if(!iso) return null;
+  const [y, m, d] = iso.split('-').map(Number);
+  if(!y || !m || !d) return null;
+  return new Date(y, m - 1, d);
 }
 
-// Met légèrement en avant la carte dont la soirée est la plus proche,
-// et réduit légèrement l'autre — cette mise en avant s'inverse
-// automatiquement à chaque publication puisqu'elle est recalculée à
-// partir des vraies dates.
-function appliquerTaillesRelatives(d){
-  const cardAix = document.getElementById('card-aix');
-  const cardMar = document.getElementById('card-mar');
-  const eventsWrap = document.querySelector('.events');
-  cardAix.classList.remove('event--near', 'event--far');
-  cardMar.classList.remove('event--near', 'event--far');
-  eventsWrap.classList.remove('near-aix', 'near-mar');
+// Choisit automatiquement la bonne date pour une antenne : "current"
+// tant qu'elle n'est pas encore passée, puis "next" dès que "current"
+// est dans le passé — c'est ça qui permet au site de basculer tout seul
+// sans republier, une fois que le mardi suivant a été pré-rempli.
+function choisirDate(bloc){
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0,0,0,0);
 
-  const dateAix = parseEventDate(d.aix.jj, d.aix.mois);
-  const dateMar = parseEventDate(d.marseille.jj, d.marseille.mois);
-  if(!dateAix || !dateMar || dateAix.getTime() === dateMar.getTime()) return;
+  const dCurrent = parseISO(bloc.current);
+  const dNext = parseISO(bloc.next);
 
-  if(dateAix.getTime() < dateMar.getTime()){
-    cardAix.classList.add('event--near');
-    cardMar.classList.add('event--far');
-    eventsWrap.classList.add('near-aix');
-  } else {
-    cardMar.classList.add('event--near');
-    cardAix.classList.add('event--far');
-    eventsWrap.classList.add('near-mar');
-  }
+  if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent;
+  if(dNext) return dNext;
+  return dCurrent; // repli : rien de mieux à afficher, même si passée
+}
+
+function formatDate(d){
+  if(!d) return { jj: '—', mois: '—', date: '—' };
+  return {
+    jj: String(d.getDate()),
+    mois: MOIS_ABBR[d.getMonth()],
+    date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()]
+  };
 }
 
 async function chargerDonnees(){
@@ -378,15 +346,17 @@ async function chargerDonnees(){
     if(!res.ok) throw new Error('data.json introuvable');
     const d = await res.json();
 
-    document.getElementById('aix-jj').textContent = d.aix.jj;
-    document.getElementById('aix-mois').textContent = d.aix.mois;
-    document.getElementById('aix-date').textContent = d.aix.date;
+    const aixDate = formatDate(choisirDate(d.aix));
+    document.getElementById('aix-jj').textContent = aixDate.jj;
+    document.getElementById('aix-mois').textContent = aixDate.mois;
+    document.getElementById('aix-date').textContent = aixDate.date;
     document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
     document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
 
-    document.getElementById('mar-jj').textContent = d.marseille.jj;
-    document.getElementById('mar-mois').textContent = d.marseille.mois;
-    document.getElementById('mar-date').textContent = d.marseille.date;
+    const marDate = formatDate(choisirDate(d.marseille));
+    document.getElementById('mar-jj').textContent = marDate.jj;
+    document.getElementById('mar-mois').textContent = marDate.mois;
+    document.getElementById('mar-date').textContent = marDate.date;
 
     const marWrap = document.getElementById('mar-address-wrap');
     marWrap.textContent = '';
@@ -406,8 +376,6 @@ async function chargerDonnees(){
     }
 
     document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
-
-    appliquerTaillesRelatives(d);
   }catch(e){
     console.error('Impossible de charger data.json :', e);
   }
