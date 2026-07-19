@@ -117,7 +117,7 @@
     -webkit-backdrop-filter: blur(14px);
     text-align:center;
     animation: fadeIn 0.6s ease both;
-    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, padding 0.3s ease, opacity 0.3s ease;
   }
   .event:hover{
     transform: translateY(-2px);
@@ -125,6 +125,27 @@
     background: rgba(255,255,255,0.065);
   }
   .event:nth-child(2){ animation-delay:0.08s; }
+
+  /* La soirée la plus proche est légèrement mise en avant, l'autre légèrement réduite */
+  .event--near{ padding:27px 22px; }
+  .event--near .datebox{ width:72px; height:72px; }
+  .event--near .datebox .day{ font-size:25px; }
+  .event--near .event-title{ font-size:17px; }
+  .event--far{ padding:18px 16px; opacity:0.9; }
+  .event--far .datebox{ width:56px; height:56px; }
+  .event--far .datebox .day{ font-size:19px; }
+  .event--far .event-title{ font-size:15px; }
+
+  /* Etat de chargement : petite barre qui pulse, le temps que data.json arrive */
+  .skeleton{
+    display:inline-block;
+    background: linear-gradient(90deg, rgba(255,255,255,0.07) 25%, rgba(255,255,255,0.14) 37%, rgba(255,255,255,0.07) 63%);
+    background-size:400% 100%;
+    animation: shimmer 1.4s ease infinite;
+    border-radius:4px;
+    vertical-align:middle;
+  }
+  @keyframes shimmer{ 0%{background-position:100% 0;} 100%{background-position:0 0;} }
 
   .datebox{
     width:64px; height:64px;
@@ -135,8 +156,9 @@
     display:flex; flex-direction:column;
     align-items:center; justify-content:center;
     line-height:1.1;
+    transition: width 0.3s ease, height 0.3s ease;
   }
-  .datebox .day{ font-size:22px; font-weight:700; }
+  .datebox .day{ font-size:22px; font-weight:700; transition: font-size 0.3s ease; }
   .datebox .mon{ font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
 
   .pill{
@@ -155,6 +177,7 @@
     font-size:16px;
     font-weight:600;
     margin:0 0 8px;
+    transition: font-size 0.3s ease;
   }
   .event-meta{
     font-size:13px;
@@ -260,23 +283,23 @@
 
     <div class="events">
 
-      <div class="event">
-        <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
+      <div class="event" id="card-aix">
+        <div class="datebox"><span class="day" id="aix-jj"><span class="skeleton" style="width:22px;height:0.9em;"></span></span><span class="mon" id="aix-mois"><span class="skeleton" style="width:28px;height:0.7em;"></span></span></div>
         <div class="pill aix">Aix-en-Provence</div>
         <div class="event-title">Antenne d'Aix</div>
         <div class="event-meta">
-          Mardi <span id="aix-date">[DATE]</span> · 19h00 – 22h30<br>
-          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
+          Mardi <span id="aix-date"><span class="skeleton" style="width:70px;height:0.9em;"></span></span> · 19h00 – 22h30<br>
+          <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link" aria-label="Ouvrir l'itinéraire vers le club d'Aix-en-Provence">📍 <span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
 
-      <div class="event">
-        <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
+      <div class="event" id="card-mar">
+        <div class="datebox"><span class="day" id="mar-jj"><span class="skeleton" style="width:22px;height:0.9em;"></span></span><span class="mon" id="mar-mois"><span class="skeleton" style="width:28px;height:0.7em;"></span></span></div>
         <div class="pill marseille">Marseille</div>
         <div class="event-title">Antenne de Marseille</div>
         <div class="event-meta">
-          Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
-          <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
+          Mardi <span id="mar-date"><span class="skeleton" style="width:70px;height:0.9em;"></span></span> · 19h00 – 22h30<br>
+          <span id="mar-address-wrap"><span class="skeleton" style="width:160px;height:0.9em;"></span></span>
         </div>
       </div>
 
@@ -290,7 +313,7 @@
     </div>
 
     <footer>
-      Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a>
+      Contact&nbsp;: <a href="mailto:qpjb.aix@gmail.com">✉️ qpjb.aix@gmail.com</a>
       <div class="insta-link">
         <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -309,6 +332,50 @@
 // Charge les données variables (dates, adresses) depuis data.json.
 // Le "?t=" + timestamp force le navigateur à toujours aller chercher la
 // dernière version de data.json, sans jamais changer l'URL de la page.
+
+const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+
+// Devine une vraie date (jour+mois+année) à partir des champs texte
+// jj/mois de data.json, pour pouvoir comparer Aix et Marseille entre eux.
+// Retourne null si le format ne correspond pas (pas grave : dans ce cas
+// on n'affiche simplement pas de différence de taille entre les cartes).
+function parseEventDate(jj, mois){
+  const day = parseInt(jj, 10);
+  const idx = MOIS_ABBR.indexOf((mois || '').trim().toUpperCase());
+  if(isNaN(day) || idx === -1) return null;
+  const now = new Date();
+  let d = new Date(now.getFullYear(), idx, day);
+  // Si la date semble être passée depuis plus d'un mois, elle concerne
+  // probablement l'année suivante (utile en fin d'année civile).
+  if(d.getTime() < now.getTime() - 30*24*3600*1000){
+    d = new Date(now.getFullYear() + 1, idx, day);
+  }
+  return d;
+}
+
+// Met légèrement en avant la carte dont la soirée est la plus proche,
+// et réduit légèrement l'autre — cette mise en avant s'inverse
+// automatiquement à chaque publication puisqu'elle est recalculée à
+// partir des vraies dates.
+function appliquerTaillesRelatives(d){
+  const cardAix = document.getElementById('card-aix');
+  const cardMar = document.getElementById('card-mar');
+  cardAix.classList.remove('event--near', 'event--far');
+  cardMar.classList.remove('event--near', 'event--far');
+
+  const dateAix = parseEventDate(d.aix.jj, d.aix.mois);
+  const dateMar = parseEventDate(d.marseille.jj, d.marseille.mois);
+  if(!dateAix || !dateMar || dateAix.getTime() === dateMar.getTime()) return;
+
+  if(dateAix.getTime() < dateMar.getTime()){
+    cardAix.classList.add('event--near');
+    cardMar.classList.add('event--far');
+  } else {
+    cardMar.classList.add('event--near');
+    cardAix.classList.add('event--far');
+  }
+}
+
 async function chargerDonnees(){
   try{
     const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
@@ -333,7 +400,8 @@ async function chargerDonnees(){
       a.target = '_blank';
       a.rel = 'noopener';
       a.className = 'addr-link';
-      a.textContent = d.marseille.adresse;
+      a.setAttribute('aria-label', "Ouvrir l'itinéraire vers le club de Marseille");
+      a.textContent = '📍 ' + d.marseille.adresse;
       marWrap.appendChild(a);
     } else {
       const span = document.createElement('span');
@@ -343,6 +411,8 @@ async function chargerDonnees(){
     }
 
     document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
+
+    appliquerTaillesRelatives(d);
   }catch(e){
     console.error('Impossible de charger data.json :', e);
   }
