@@ -12,18 +12,6 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<script>
-  // Force un chargement frais une fois par visite (évite d'utiliser une
-  // ancienne version en cache du panneau, avec un mot de passe périmé)
-  (function(){
-    if(!sessionStorage.getItem('qpjb-admin-fresh-load')){
-      sessionStorage.setItem('qpjb-admin-fresh-load', '1');
-      var url = new URL(location.href);
-      url.searchParams.set('_r', Date.now());
-      location.replace(url.toString());
-    }
-  })();
-</script>
 <title>QPJB — Panneau d'administration</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="icon" type="image/x-icon" href="favicon.ico">

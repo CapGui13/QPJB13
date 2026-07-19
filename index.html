@@ -333,21 +333,61 @@
 // Charge les données variables (dates, adresses) depuis data.json.
 // Le "?t=" + timestamp force le navigateur à toujours aller chercher la
 // dernière version de data.json, sans jamais changer l'URL de la page.
+
+const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+
+// Transforme une date ISO ("2026-09-08") en objet Date à minuit local
+// (évite les décalages de fuseau horaire liés à new Date("2026-09-08")).
+function parseISO(iso){
+  if(!iso) return null;
+  const [y, m, d] = iso.split('-').map(Number);
+  if(!y || !m || !d) return null;
+  return new Date(y, m - 1, d);
+}
+
+// Choisit automatiquement la bonne date pour une antenne : "current"
+// tant qu'elle n'est pas encore passée, puis "next" dès que "current"
+// est dans le passé — c'est ça qui permet au site de basculer tout seul
+// sans republier, une fois que le mardi suivant a été pré-rempli.
+function choisirDate(bloc){
+  const aujourdhui = new Date();
+  aujourdhui.setHours(0,0,0,0);
+
+  const dCurrent = parseISO(bloc.current);
+  const dNext = parseISO(bloc.next);
+
+  if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent;
+  if(dNext) return dNext;
+  return dCurrent; // repli : rien de mieux à afficher, même si passée
+}
+
+function formatDate(d){
+  if(!d) return { jj: '—', mois: '—', date: '—' };
+  return {
+    jj: String(d.getDate()),
+    mois: MOIS_ABBR[d.getMonth()],
+    date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()]
+  };
+}
+
 async function chargerDonnees(){
   try{
     const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
     if(!res.ok) throw new Error('data.json introuvable');
     const d = await res.json();
 
-    document.getElementById('aix-jj').textContent = d.aix.jj;
-    document.getElementById('aix-mois').textContent = d.aix.mois;
-    document.getElementById('aix-date').textContent = d.aix.date;
+    const aixDate = formatDate(choisirDate(d.aix));
+    document.getElementById('aix-jj').textContent = aixDate.jj;
+    document.getElementById('aix-mois').textContent = aixDate.mois;
+    document.getElementById('aix-date').textContent = aixDate.date;
     document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
     document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
 
-    document.getElementById('mar-jj').textContent = d.marseille.jj;
-    document.getElementById('mar-mois').textContent = d.marseille.mois;
-    document.getElementById('mar-date').textContent = d.marseille.date;
+    const marDate = formatDate(choisirDate(d.marseille));
+    document.getElementById('mar-jj').textContent = marDate.jj;
+    document.getElementById('mar-mois').textContent = marDate.mois;
+    document.getElementById('mar-date').textContent = marDate.date;
 
     const marWrap = document.getElementById('mar-address-wrap');
     marWrap.textContent = '';
