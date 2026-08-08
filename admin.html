@@ -708,8 +708,7 @@ function remplirSelectsDate(prefix){
   // l'ordre normal (retour à janvier une fois décembre passé).
   const moisActuel = new Date().getMonth();
   const ordreMois = Array.from({ length: 12 }, (_, i) => (moisActuel + i) % 12);
-  moisSel.innerHTML = '<option value="">Mois</option>' +
-    ordreMois.map(i => `<option value="${i}">${MOIS_NOMS_FORM[i]}</option>`).join('');
+  moisSel.innerHTML = ordreMois.map(i => `<option value="${i}">${MOIS_NOMS_FORM[i]}</option>`).join('');
 
   remplirJoursOrdre(prefix);
 }
@@ -734,8 +733,7 @@ function remplirJoursOrdre(prefix){
     ordreJours = Array.from({ length: 31 }, (_, i) => i + 1);
   }
 
-  daySel.innerHTML = '<option value="">Jour</option>' +
-    ordreJours.map(j => `<option value="${j}">${j}</option>`).join('');
+  daySel.innerHTML = ordreJours.map(j => `<option value="${j}">${j}</option>`).join('');
   daySel.value = valeurActuelle;
   if(daySel._csRefresh) daySel._csRefresh();
 }
@@ -874,6 +872,14 @@ function enhanceSelect(select){
     document.querySelectorAll('.cs-list.open').forEach(l => { if(l !== list) l.classList.remove('open'); });
     render();
     list.classList.add('open');
+    // Positionne la liste au moment de l'ouverture pour que l'option
+    // actuellement sélectionnée soit directement visible, sans avoir à
+    // scroller pour la retrouver.
+    const active = list.querySelector('.cs-option--active');
+    if(active){
+      const target = active.offsetTop - (list.clientHeight / 2) + (active.clientHeight / 2);
+      list.scrollTop = Math.max(0, target);
+    }
   }
   function close(){ list.classList.remove('open'); }
 
