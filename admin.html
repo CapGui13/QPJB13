@@ -428,9 +428,11 @@
             </div>
             <input type="hidden" id="mar-next">
             <div class="hint" style="margin:8px 0 0;">Même principe : bascule automatique sur le mardi suivant une fois la date ci-dessus dépassée, pré-rempli 14 jours après (ajustable si besoin).</div>
-            <label style="margin-top:14px;">Adresse (laisser vide si pas encore connue)</label>
-            <input type="text" id="mar-adresse" placeholder="Adresse à Marseille" disabled>
+            <label style="margin-top:14px;">Adresse</label>
+            <input type="text" id="mar-adresse" placeholder="22 rue Montgrand" disabled>
+            <input type="text" id="mar-adresse2" placeholder="13006 Marseille" style="margin-top:8px;" disabled>
             <button type="button" class="btn-secondary" style="width:100%; margin-top:8px;" onclick="toggleAdresseEdit('mar')" id="mar-adresse-btn">✏️ Modifier l'adresse</button>
+            <div class="hint" style="margin:8px 0 0;">L'adresse change rarement — elle reste verrouillée par défaut pour éviter une modification accidentelle.</div>
           </div>
 
           <div class="hint" style="margin:-10px 0 16px;"><span class="required-star">*</span> champ requis</div>
@@ -603,7 +605,8 @@ function getValues(){
     marseille: {
       current: val('mar-current'),
       next: val('mar-next'),
-      adresse: val('mar-adresse')
+      adresse1: val('mar-adresse') || '22 rue Montgrand',
+      adresse2: val('mar-adresse2') || '13006 Marseille'
     },
     lastUpdate: formatLastUpdate()
   };
@@ -628,7 +631,7 @@ function genererFichier(){
 }
 
 function sauvegarderFormulaire(){
-  const ids = ['aix-current','aix-next','aix-adresse1','aix-adresse2','mar-current','mar-next','mar-adresse'];
+  const ids = ['aix-current','aix-next','aix-adresse1','aix-adresse2','mar-current','mar-next','mar-adresse','mar-adresse2'];
   const data = {};
   ids.forEach(id => data[id] = document.getElementById(id).value);
   localStorage.setItem('qpjb-editeur', JSON.stringify(data));
@@ -645,6 +648,8 @@ function chargerFormulaire(){
     } else {
       document.getElementById('aix-adresse1').value = '18 Boulevard du Maréchal Juin';
       document.getElementById('aix-adresse2').value = '13090 Aix-en-Provence';
+      document.getElementById('mar-adresse').value = '22 rue Montgrand';
+      document.getElementById('mar-adresse2').value = '13006 Marseille';
     }
   }catch(e){}
   ['aix-current','aix-next','mar-current','mar-next'].forEach(prefix => {
@@ -900,7 +905,7 @@ function enhanceSelect(select){
    grisée/verrouillée par défaut, et un bouton permet de la déverrouiller
    ponctuellement pour la modifier. */
 function toggleAdresseEdit(prefix){
-  const ids = prefix === 'aix' ? ['aix-adresse1', 'aix-adresse2'] : ['mar-adresse'];
+  const ids = prefix === 'aix' ? ['aix-adresse1', 'aix-adresse2'] : ['mar-adresse', 'mar-adresse2'];
   const btn = document.getElementById(prefix + '-adresse-btn');
   const estVerrouille = document.getElementById(ids[0]).disabled;
 
@@ -932,7 +937,7 @@ function toggleAdresseEdit(prefix){
     majApercu();
   });
 });
-['aix-adresse1','aix-adresse2','mar-adresse'].forEach(id => {
+['aix-adresse1','aix-adresse2','mar-adresse','mar-adresse2'].forEach(id => {
   const el = document.getElementById(id);
   el.addEventListener('input', () => {
     if(CHAMPS_REQUIS.includes(id)) validerChamp(el);

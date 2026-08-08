@@ -293,7 +293,7 @@
         <div class="event-title event-title--marseille">Marseille</div>
         <div class="event-meta">
           Mardi <span id="mar-date">[DATE]</span> · 19h00 – 22h30<br>
-          <span id="mar-address-wrap"><span class="ph">[Adresse à Marseille — à compléter]</span></span>
+          <a href="https://www.google.com/maps/@43.2916723,5.3785727,3a,75y,7.22h,90t/data=!3m7!1e1!3m5!1s3LhJxuxHAeVCLw5QUWPprw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D3LhJxuxHAeVCLw5QUWPprw%26yaw%3D7.215795647181401!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="mar-adresse1">22 rue Montgrand</span><br><span id="mar-adresse2">13006 Marseille</span></a>
         </div>
       </div>
 
@@ -305,7 +305,7 @@
         <div>Tél : <span class="ph">[Téléphone à compléter]</span></div>
       </div>
       <div class="contact-block marseille">
-        <div>Email : <span class="ph">[Email à compléter]</span></div>
+        <div>Email : <a href="mailto:qpjb.marseille@gmail.com">qpjb.marseille@gmail.com</a></div>
         <div>Tél : <span class="ph">[Téléphone à compléter]</span></div>
       </div>
     </div>
@@ -389,22 +389,8 @@ async function chargerDonnees(){
     document.getElementById('mar-mois').textContent = marDate.mois;
     document.getElementById('mar-date').textContent = marDate.date;
 
-    const marWrap = document.getElementById('mar-address-wrap');
-    marWrap.textContent = '';
-    if(d.marseille.adresse){
-      const a = document.createElement('a');
-      a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.marseille.adresse);
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.className = 'addr-link';
-      a.textContent = d.marseille.adresse;
-      marWrap.appendChild(a);
-    } else {
-      const span = document.createElement('span');
-      span.className = 'ph';
-      span.textContent = '[Adresse à Marseille — à compléter]';
-      marWrap.appendChild(span);
-    }
+    document.getElementById('mar-adresse1').textContent = d.marseille.adresse1;
+    document.getElementById('mar-adresse2').textContent = d.marseille.adresse2;
 
     document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
   }catch(e){
