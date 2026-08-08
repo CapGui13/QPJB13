@@ -1,7 +1,7 @@
 {
   "aix": {
-    "current": "2026-09-08",
-    "next": "2026-09-22",
+    "current": "2026-09-02",
+    "next": "2026-09-16",
     "adresse1": "18 Boulevard du Maréchal Juin",
     "adresse2": "13090 Aix-en-Provence"
   },
@@ -11,5 +11,5 @@
     "adresse1": "22 rue Montgrand",
     "adresse2": "13006 Marseille"
   },
-  "lastUpdate": "19/07/2026 à 12h32"
+  "lastUpdate": "08/08/2026 à 16h07"
 }
