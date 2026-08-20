@@ -51,6 +51,8 @@
 
   @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
 
+  .stage{ position:relative; max-width:1700px; margin:0 auto; }
+
   header{
     text-align:center;
     padding:56px 20px 10px;
@@ -264,21 +266,122 @@
     margin-top:8px;
     font-style:italic;
   }
+
+  .side-poster{
+    position:absolute;
+    top:122px;
+    width:450px;
+    display:block;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid var(--card-border);
+    background:var(--card);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    box-shadow:0 20px 46px -30px rgba(0,0,0,0.70);
+    transition:transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+    animation: fadeIn 0.7s ease both;
+  }
+  .side-poster:hover{ transform:translateY(-3px); border-color:rgba(255,255,255,0.22); }
+  .side-poster img{ display:block; width:100%; height:auto; }
+  .side-poster--aix{ left:0; box-shadow:0 20px 46px -28px rgba(110,168,255,0.68); }
+  .side-poster--marseille{ right:0; box-shadow:0 20px 46px -28px rgba(255,138,101,0.68); }
+  .side-poster:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+
+  .poster-lightbox{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:rgba(5,8,15,0.88);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:opacity 0.28s ease, visibility 0.28s ease;
+  }
+  .poster-lightbox.is-open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+  }
+  .poster-lightbox__image{
+    display:block;
+    max-width:min(760px, 92vw);
+    max-height:92vh;
+    width:auto;
+    height:auto;
+    border-radius:18px;
+    box-shadow:0 30px 90px rgba(0,0,0,0.6);
+    opacity:0;
+    transform:scale(0.965);
+    transition:opacity 0.28s ease, transform 0.28s ease;
+  }
+  .poster-lightbox.is-open .poster-lightbox__image{
+    opacity:1;
+    transform:scale(1);
+  }
+  .poster-lightbox__close{
+    position:fixed;
+    top:18px;
+    right:22px;
+    width:44px;
+    height:44px;
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:50%;
+    background:rgba(15,20,32,0.78);
+    color:#fff;
+    font-size:28px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    opacity:0;
+    transform:translateY(-8px);
+    transition:opacity 0.28s ease, transform 0.28s ease, background 0.2s ease;
+  }
+  .poster-lightbox.is-open .poster-lightbox__close{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .poster-lightbox__close:hover{ background:rgba(255,255,255,0.12); }
+  body.lightbox-open{ overflow:hidden; }
+
+  @media (max-width:1619px){
+    .side-poster{ width:380px; top:172px; }
+  }
+  @media (max-width:1449px){
+    .side-poster{ width:300px; top:228px; }
+  }
+  @media (max-width:1279px){
+    .side-poster{ width:220px; top:285px; }
+  }
+  @media (max-width:1099px){
+    .side-poster{ display:none; }
+  }
 </style>
 </head>
 <body>
-
+<div class="stage">
   <header>
     <div class="suits">♠ <span class="red">♥</span> ♣ <span class="red">♦</span></div>
     <h1>QPJB</h1>
     <div class="tagline">Quai Provençal des Jeunes Bridgeurs</div>
   </header>
-
+  <a class="side-poster side-poster--aix" href="assets/affiches/affiche-lancement-aix-2026.webp" data-poster="assets/affiches/affiche-lancement-aix-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Aix-en-Provence">
+    <img src="assets/affiches/affiche-lancement-aix-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Aix-en-Provence — soirée de lancement du mardi 8 septembre 2026">
+  </a>
+  <a class="side-poster side-poster--marseille" href="assets/affiches/affiche-lancement-marseille-2026.webp" data-poster="assets/affiches/affiche-lancement-marseille-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Marseille">
+    <img src="assets/affiches/affiche-lancement-marseille-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Marseille — soirée de lancement du mardi 15 septembre 2026">
+  </a>
   <main>
     <div class="section-label">Prochaines soirées cartes</div>
-
     <div class="events">
-
       <div class="event">
         <div class="datebox"><span class="day" id="aix-jj">[JJ]</span><span class="mon" id="aix-mois">[Mois]</span></div>
         <div class="event-title event-title--aix">Aix-en-Provence</div>
@@ -287,7 +390,6 @@
           <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2">13090 Aix-en-Provence</span></a>
         </div>
       </div>
-
       <div class="event">
         <div class="datebox"><span class="day" id="mar-jj">[JJ]</span><span class="mon" id="mar-mois">[Mois]</span></div>
         <div class="event-title event-title--marseille">Marseille</div>
@@ -296,9 +398,7 @@
           <a href="https://www.google.com/maps/@43.2916723,5.3785727,3a,75y,7.22h,90t/data=!3m7!1e1!3m5!1s3LhJxuxHAeVCLw5QUWPprw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D3LhJxuxHAeVCLw5QUWPprw%26yaw%3D7.215795647181401!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="mar-adresse1">22 rue Montgrand</span><br><span id="mar-adresse2">13006 Marseille</span></a>
         </div>
       </div>
-
     </div>
-
     <div class="contact-row">
       <div class="contact-block aix">
         <div>Email : <a href="mailto:qpjb.aix@gmail.com">qpjb.aix@gmail.com</a></div>
@@ -309,7 +409,6 @@
         <div>Tél : <span class="ph">[Téléphone à compléter]</span></div>
       </div>
     </div>
-
 <footer>
       <div class="social-row">
         <a href="https://www.instagram.com/qpjb_13/" target="_blank" rel="noopener" class="social-btn">
@@ -328,77 +427,74 @@
     </footer>
     <div class="note" id="last-update">Dernière mise à jour : —</div>
   </main>
+</div>
+
+<div class="poster-lightbox" id="poster-lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Affiche agrandie">
+  <button class="poster-lightbox__close" type="button" aria-label="Fermer l’affiche">×</button>
+  <img class="poster-lightbox__image" src="" alt="">
+</div>
 
 <script>
-// Charge les données variables (dates, adresses) depuis data.json.
-// Le "?t=" + timestamp force le navigateur à toujours aller chercher la
-// dernière version de data.json, sans jamais changer l'URL de la page.
+const lightbox = document.getElementById('poster-lightbox');
+const lightboxImage = lightbox.querySelector('.poster-lightbox__image');
+const lightboxClose = lightbox.querySelector('.poster-lightbox__close');
+let lastPosterTrigger = null;
+let closeTimer = null;
+
+function ouvrirAffiche(link){
+  if(closeTimer){
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  }
+  lastPosterTrigger = link;
+  lightboxImage.src = link.dataset.poster;
+  lightboxImage.alt = link.querySelector('img')?.alt || 'Affiche QPJB agrandie';
+  lightbox.classList.add('is-open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('lightbox-open');
+  lightboxClose.focus();
+}
+
+function fermerAffiche(){
+  lightbox.classList.remove('is-open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('lightbox-open');
+  const triggerToFocus = lastPosterTrigger;
+  closeTimer = setTimeout(() => {
+    if(!lightbox.classList.contains('is-open')){
+      lightboxImage.src = '';
+      if(triggerToFocus) triggerToFocus.focus();
+    }
+    closeTimer = null;
+  }, 280);
+}
+
+document.querySelectorAll('.side-poster[data-poster]').forEach(link => {
+  link.addEventListener('click', event => {
+    event.preventDefault();
+    ouvrirAffiche(link);
+  });
+});
+
+lightboxClose.addEventListener('click', fermerAffiche);
+lightbox.addEventListener('click', event => {
+  if(event.target === lightbox) fermerAffiche();
+});
+document.addEventListener('keydown', event => {
+  if(event.key === 'Escape' && lightbox.classList.contains('is-open')) fermerAffiche();
+});
 
 const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+function parseISO(iso){ if(!iso) return null; const [y, m, d] = iso.split('-').map(Number); if(!y || !m || !d) return null; return new Date(y, m - 1, d); }
+function choisirDate(bloc){ const aujourdhui = new Date(); aujourdhui.setHours(0,0,0,0); const dCurrent = parseISO(bloc.current); const dNext = parseISO(bloc.next); if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent; if(dNext) return dNext; return dCurrent; }
+function formatDate(d){ if(!d) return { jj: '—', mois: '—', date: '—' }; return { jj: String(d.getDate()), mois: MOIS_ABBR[d.getMonth()], date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()] }; }
+const DATA_URL = location.protocol === 'file:'
+  ? 'https://raw.githubusercontent.com/CapGui13/QPJB13/main/data.json'
+  : 'data.json';
 
-// Transforme une date ISO ("2026-09-08") en objet Date à minuit local
-// (évite les décalages de fuseau horaire liés à new Date("2026-09-08")).
-function parseISO(iso){
-  if(!iso) return null;
-  const [y, m, d] = iso.split('-').map(Number);
-  if(!y || !m || !d) return null;
-  return new Date(y, m - 1, d);
-}
-
-// Choisit automatiquement la bonne date pour une antenne : "current"
-// tant qu'elle n'est pas encore passée, puis "next" dès que "current"
-// est dans le passé — c'est ça qui permet au site de basculer tout seul
-// sans republier, une fois que le mardi suivant a été pré-rempli.
-function choisirDate(bloc){
-  const aujourdhui = new Date();
-  aujourdhui.setHours(0,0,0,0);
-
-  const dCurrent = parseISO(bloc.current);
-  const dNext = parseISO(bloc.next);
-
-  if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent;
-  if(dNext) return dNext;
-  return dCurrent; // repli : rien de mieux à afficher, même si passée
-}
-
-function formatDate(d){
-  if(!d) return { jj: '—', mois: '—', date: '—' };
-  return {
-    jj: String(d.getDate()),
-    mois: MOIS_ABBR[d.getMonth()],
-    date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()]
-  };
-}
-
-async function chargerDonnees(){
-  try{
-    const res = await fetch('data.json?t=' + Date.now(), { cache: 'no-store' });
-    if(!res.ok) throw new Error('data.json introuvable');
-    const d = await res.json();
-
-    const aixDate = formatDate(choisirDate(d.aix));
-    document.getElementById('aix-jj').textContent = aixDate.jj;
-    document.getElementById('aix-mois').textContent = aixDate.mois;
-    document.getElementById('aix-date').textContent = aixDate.date;
-    document.getElementById('aix-adresse1').textContent = d.aix.adresse1;
-    document.getElementById('aix-adresse2').textContent = d.aix.adresse2;
-
-    const marDate = formatDate(choisirDate(d.marseille));
-    document.getElementById('mar-jj').textContent = marDate.jj;
-    document.getElementById('mar-mois').textContent = marDate.mois;
-    document.getElementById('mar-date').textContent = marDate.date;
-
-    document.getElementById('mar-adresse1').textContent = d.marseille.adresse1;
-    document.getElementById('mar-adresse2').textContent = d.marseille.adresse2;
-
-    document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
-  }catch(e){
-    console.error('Impossible de charger data.json :', e);
-  }
-}
+async function chargerDonnees(){ try{ const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' }); if(!res.ok) throw new Error('data.json introuvable'); const d = await res.json(); const aixDate = formatDate(choisirDate(d.aix)); document.getElementById('aix-jj').textContent = aixDate.jj; document.getElementById('aix-mois').textContent = aixDate.mois; document.getElementById('aix-date').textContent = aixDate.date; document.getElementById('aix-adresse1').textContent = d.aix.adresse1; document.getElementById('aix-adresse2').textContent = d.aix.adresse2; const marDate = formatDate(choisirDate(d.marseille)); document.getElementById('mar-jj').textContent = marDate.jj; document.getElementById('mar-mois').textContent = marDate.mois; document.getElementById('mar-date').textContent = marDate.date; document.getElementById('mar-adresse1').textContent = d.marseille.adresse1; document.getElementById('mar-adresse2').textContent = d.marseille.adresse2; document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate; }catch(e){ console.error('Impossible de charger data.json :', e); } }
 chargerDonnees();
 </script>
-
 </body>
 </html>
