@@ -361,8 +361,63 @@
   @media (max-width:1279px){
     .side-poster{ width:220px; top:285px; }
   }
+  .mobile-posters{
+    display:none;
+  }
+  .mobile-poster{
+    display:block;
+    border-radius:16px;
+    overflow:hidden;
+    border:1px solid var(--card-border);
+    background:var(--card);
+    box-shadow:0 18px 38px -28px rgba(0,0,0,0.75);
+    transition:transform 0.22s ease, border-color 0.22s ease;
+  }
+  .mobile-poster:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,255,255,0.20);
+  }
+  .mobile-poster img{
+    display:block;
+    width:100%;
+    height:auto;
+  }
+  .mobile-poster:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
+
   @media (max-width:1099px){
     .side-poster{ display:none; }
+    .mobile-posters{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:18px;
+      margin:24px 0 2px;
+    }
+  }
+  @media (max-width:600px){
+    header{ padding-top:36px; }
+    main{ padding-left:16px; padding-right:16px; padding-bottom:46px; }
+    .section-label{ margin-top:28px; }
+    .mobile-posters{
+      grid-template-columns:1fr;
+      gap:16px;
+      margin-top:20px;
+    }
+    .mobile-poster{
+      width:min(100%, 390px);
+      margin:0 auto;
+    }
+    .poster-lightbox{ padding:14px; }
+    .poster-lightbox__image{
+      max-width:96vw;
+      max-height:90vh;
+      border-radius:14px;
+    }
+    .poster-lightbox__close{
+      top:10px;
+      right:10px;
+      width:42px;
+      height:42px;
+    }
   }
 </style>
 </head>
@@ -398,6 +453,14 @@
           <a href="https://www.google.com/maps/@43.2916723,5.3785727,3a,75y,7.22h,90t/data=!3m7!1e1!3m5!1s3LhJxuxHAeVCLw5QUWPprw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D3LhJxuxHAeVCLw5QUWPprw%26yaw%3D7.215795647181401!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="mar-adresse1">22 rue Montgrand</span><br><span id="mar-adresse2">13006 Marseille</span></a>
         </div>
       </div>
+    </div>
+    <div class="mobile-posters" aria-label="Affiches des prochaines soirées">
+      <a class="mobile-poster" href="assets/affiches/affiche-lancement-aix-2026.webp" data-poster="assets/affiches/affiche-lancement-aix-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Aix-en-Provence">
+        <img src="assets/affiches/affiche-lancement-aix-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Aix-en-Provence — soirée de lancement du mardi 8 septembre 2026">
+      </a>
+      <a class="mobile-poster" href="assets/affiches/affiche-lancement-marseille-2026.webp" data-poster="assets/affiches/affiche-lancement-marseille-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Marseille">
+        <img src="assets/affiches/affiche-lancement-marseille-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Marseille — soirée de lancement du mardi 15 septembre 2026">
+      </a>
     </div>
     <div class="contact-row">
       <div class="contact-block aix">
@@ -469,7 +532,7 @@ function fermerAffiche(){
   }, 280);
 }
 
-document.querySelectorAll('.side-poster[data-poster]').forEach(link => {
+document.querySelectorAll('[data-poster]').forEach(link => {
   link.addEventListener('click', event => {
     event.preventDefault();
     ouvrirAffiche(link);
