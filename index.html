@@ -361,11 +361,22 @@
   @media (max-width:1279px){
     .side-poster{ width:220px; top:285px; }
   }
-  .mobile-posters{
+  .mobile-event-posters{
     display:none;
+  }
+  .mobile-event-pair{
+    display:grid;
+    grid-template-columns:minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap:16px;
+    align-items:stretch;
+  }
+  .mobile-event-pair__poster{
+    display:flex;
+    align-items:stretch;
   }
   .mobile-poster{
     display:block;
+    width:100%;
     border-radius:16px;
     overflow:hidden;
     border:1px solid var(--card-border);
@@ -380,31 +391,69 @@
   .mobile-poster img{
     display:block;
     width:100%;
-    height:auto;
+    height:100%;
+    object-fit:cover;
   }
   .mobile-poster:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
 
   @media (max-width:1099px){
     .side-poster{ display:none; }
+    .events,
     .mobile-posters{
+      display:none;
+    }
+    .mobile-event-posters{
       display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
       gap:18px;
       margin:24px 0 2px;
+    }
+    .mobile-event-pair .event{
+      margin:0;
+      height:100%;
+    }
+  }
+  @media (max-width:720px){
+    .mobile-event-pair{
+      grid-template-columns:minmax(0, 1.1fr) minmax(140px, 0.9fr);
+      gap:14px;
+    }
+    .mobile-event-pair .event{
+      padding:18px 16px;
     }
   }
   @media (max-width:600px){
     header{ padding-top:36px; }
     main{ padding-left:16px; padding-right:16px; padding-bottom:46px; }
     .section-label{ margin-top:28px; }
-    .mobile-posters{
-      grid-template-columns:1fr;
+    .mobile-event-posters{
       gap:16px;
       margin-top:20px;
     }
+    .mobile-event-pair{
+      grid-template-columns:minmax(0, 1fr) minmax(130px, 0.78fr);
+      gap:12px;
+      align-items:stretch;
+    }
+    .mobile-event-pair .event{
+      padding:16px 14px;
+    }
+    .event-meta{
+      font-size:12.5px;
+      line-height:1.5;
+    }
+    .event-title{
+      font-size:15px;
+      padding:6px 12px;
+    }
+    .datebox{
+      width:58px;
+      height:58px;
+      margin-bottom:12px;
+    }
+    .datebox .day{ font-size:20px; }
     .mobile-poster{
-      width:min(100%, 390px);
-      margin:0 auto;
+      height:100%;
+      min-height:100%;
     }
     .poster-lightbox{ padding:14px; }
     .poster-lightbox__image{
@@ -417,6 +466,21 @@
       right:10px;
       width:42px;
       height:42px;
+    }
+  }
+  @media (max-width:430px){
+    .mobile-event-pair{
+      grid-template-columns:minmax(0, 1fr) 124px;
+      gap:10px;
+    }
+    .mobile-event-pair .event{
+      padding:14px 12px;
+    }
+    .event-meta{
+      font-size:12px;
+    }
+    .event-title{
+      font-size:14px;
     }
   }
 </style>
@@ -454,13 +518,37 @@
         </div>
       </div>
     </div>
-    <div class="mobile-posters" aria-label="Affiches des prochaines soirées">
-      <a class="mobile-poster" href="assets/affiches/affiche-lancement-aix-2026.webp" data-poster="assets/affiches/affiche-lancement-aix-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Aix-en-Provence">
-        <img src="assets/affiches/affiche-lancement-aix-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Aix-en-Provence — soirée de lancement du mardi 8 septembre 2026">
-      </a>
-      <a class="mobile-poster" href="assets/affiches/affiche-lancement-marseille-2026.webp" data-poster="assets/affiches/affiche-lancement-marseille-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Marseille">
-        <img src="assets/affiches/affiche-lancement-marseille-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Marseille — soirée de lancement du mardi 15 septembre 2026">
-      </a>
+    <div class="mobile-event-posters" aria-label="Soirées et affiches des prochaines soirées">
+      <div class="mobile-event-pair">
+        <div class="event">
+          <div class="datebox"><span class="day" id="aix-jj-mobile">[JJ]</span><span class="mon" id="aix-mois-mobile">[Mois]</span></div>
+          <div class="event-title event-title--aix">Aix-en-Provence</div>
+          <div class="event-meta">
+            Mardi <span id="aix-date-mobile">[DATE]</span> · 19h00 – 22h30<br>
+            <a href="https://www.google.com/maps/place/Club+de+Bridge+Roy+Ren%C3%A9/@43.5214349,5.4351089,3a,75y,109.64h,93.48t/data=!3m7!1e1!3m5!1sqfAyvyDWXOrcJyCvtsqAjg!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-3.4829768321563677%26panoid%3DqfAyvyDWXOrcJyCvtsqAjg%26yaw%3D109.64474197178725!7i16384!8i8192!4m6!3m5!1s0x12c98d7624d282a7:0x2d24890b32d556a4!8m2!3d43.5213841!4d5.4353044!16s%2Fg%2F11bv5twdgf?entry=ttu&g_ep=EgoyMDI2MDcxNS4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="aix-adresse1-mobile">18 Boulevard du Maréchal Juin</span><br><span id="aix-adresse2-mobile">13090 Aix-en-Provence</span></a>
+          </div>
+        </div>
+        <div class="mobile-event-pair__poster">
+          <a class="mobile-poster" href="assets/affiches/affiche-lancement-aix-2026.webp" data-poster="assets/affiches/affiche-lancement-aix-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Aix-en-Provence">
+            <img src="assets/affiches/affiche-lancement-aix-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Aix-en-Provence — soirée de lancement du mardi 8 septembre 2026">
+          </a>
+        </div>
+      </div>
+      <div class="mobile-event-pair">
+        <div class="event">
+          <div class="datebox"><span class="day" id="mar-jj-mobile">[JJ]</span><span class="mon" id="mar-mois-mobile">[Mois]</span></div>
+          <div class="event-title event-title--marseille">Marseille</div>
+          <div class="event-meta">
+            Mardi <span id="mar-date-mobile">[DATE]</span> · 19h00 – 22h30<br>
+            <a href="https://www.google.com/maps/@43.2916723,5.3785727,3a,75y,7.22h,90t/data=!3m7!1e1!3m5!1s3LhJxuxHAeVCLw5QUWPprw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D0%26panoid%3D3LhJxuxHAeVCLw5QUWPprw%26yaw%3D7.215795647181401!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener" class="addr-link"><span id="mar-adresse1-mobile">22 rue Montgrand</span><br><span id="mar-adresse2-mobile">13006 Marseille</span></a>
+          </div>
+        </div>
+        <div class="mobile-event-pair__poster">
+          <a class="mobile-poster" href="assets/affiches/affiche-lancement-marseille-2026.webp" data-poster="assets/affiches/affiche-lancement-marseille-2026.webp" aria-label="Ouvrir l’affiche de la soirée de lancement à Marseille">
+            <img src="assets/affiches/affiche-lancement-marseille-2026.webp" width="1100" height="1555" loading="lazy" decoding="async" alt="Affiche QPJB Marseille — soirée de lancement du mardi 15 septembre 2026">
+          </a>
+        </div>
+      </div>
     </div>
     <div class="contact-row">
       <div class="contact-block aix">
@@ -556,7 +644,38 @@ const DATA_URL = location.protocol === 'file:'
   ? 'https://raw.githubusercontent.com/CapGui13/QPJB13/main/data.json'
   : 'data.json';
 
-async function chargerDonnees(){ try{ const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' }); if(!res.ok) throw new Error('data.json introuvable'); const d = await res.json(); const aixDate = formatDate(choisirDate(d.aix)); document.getElementById('aix-jj').textContent = aixDate.jj; document.getElementById('aix-mois').textContent = aixDate.mois; document.getElementById('aix-date').textContent = aixDate.date; document.getElementById('aix-adresse1').textContent = d.aix.adresse1; document.getElementById('aix-adresse2').textContent = d.aix.adresse2; const marDate = formatDate(choisirDate(d.marseille)); document.getElementById('mar-jj').textContent = marDate.jj; document.getElementById('mar-mois').textContent = marDate.mois; document.getElementById('mar-date').textContent = marDate.date; document.getElementById('mar-adresse1').textContent = d.marseille.adresse1; document.getElementById('mar-adresse2').textContent = d.marseille.adresse2; document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate; }catch(e){ console.error('Impossible de charger data.json :', e); } }
+function setText(ids, value){
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = value;
+  });
+}
+
+async function chargerDonnees(){
+  try{
+    const res = await fetch(DATA_URL + '?t=' + Date.now(), { cache: 'no-store' });
+    if(!res.ok) throw new Error('data.json introuvable');
+    const d = await res.json();
+
+    const aixDate = formatDate(choisirDate(d.aix));
+    setText(['aix-jj','aix-jj-mobile'], aixDate.jj);
+    setText(['aix-mois','aix-mois-mobile'], aixDate.mois);
+    setText(['aix-date','aix-date-mobile'], aixDate.date);
+    setText(['aix-adresse1','aix-adresse1-mobile'], d.aix.adresse1);
+    setText(['aix-adresse2','aix-adresse2-mobile'], d.aix.adresse2);
+
+    const marDate = formatDate(choisirDate(d.marseille));
+    setText(['mar-jj','mar-jj-mobile'], marDate.jj);
+    setText(['mar-mois','mar-mois-mobile'], marDate.mois);
+    setText(['mar-date','mar-date-mobile'], marDate.date);
+    setText(['mar-adresse1','mar-adresse1-mobile'], d.marseille.adresse1);
+    setText(['mar-adresse2','mar-adresse2-mobile'], d.marseille.adresse2);
+
+    document.getElementById('last-update').textContent = 'Dernière mise à jour : ' + d.lastUpdate;
+  }catch(e){
+    console.error('Impossible de charger data.json :', e);
+  }
+}
 chargerDonnees();
 </script>
 </body>
