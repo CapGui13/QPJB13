@@ -379,23 +379,18 @@
     display:none;
   }
   .mobile-event-pair{
-    display:flex;
+    display:grid;
+    grid-template-columns:minmax(0, 1.15fr) minmax(0, 0.85fr);
     gap:16px;
     align-items:stretch;
   }
-  .mobile-event-pair .event{
-    flex:1 1 auto;
-    min-width:0;
-  }
   .mobile-event-pair__poster{
-    flex:0 0 auto;
-    align-self:stretch;
-    aspect-ratio:1100 / 1555;
+    display:flex;
+    align-items:center;
   }
   .mobile-poster{
     display:block;
     width:100%;
-    height:100%;
     border:0;
     border-radius:0;
     overflow:visible;
@@ -412,7 +407,7 @@
   .mobile-poster img{
     display:block;
     width:100%;
-    height:100%;
+    height:auto;
     border-radius:0;
     object-fit:contain;
   }
@@ -436,10 +431,11 @@
   }
   @media (max-width:720px){
     .mobile-event-pair{
+      grid-template-columns:minmax(0, 1.1fr) minmax(140px, 0.9fr);
       gap:14px;
     }
     .mobile-event-pair .event{
-      padding:18px 14px;
+      padding:18px 16px;
     }
   }
   @media (max-width:600px){
@@ -451,11 +447,16 @@
       margin-top:20px;
     }
     .mobile-event-pair{
+      grid-template-columns:minmax(0, 1fr) 160px;
       gap:12px;
-      align-items:stretch;
+      align-items:center;
     }
     .mobile-event-pair .event{
-      padding:15px 12px;
+      padding:14px 12px;
+    }
+    .mobile-event-pair__poster{
+      width:160px;
+      justify-self:end;
     }
     .event-meta{
       font-size:12.5px;
@@ -470,11 +471,11 @@
       padding:6px 12px;
     }
     .datebox{
-      width:58px;
-      height:58px;
-      margin-bottom:12px;
+      width:52px;
+      height:52px;
+      margin-bottom:9px;
     }
-    .datebox .day{ font-size:20px; }
+    .datebox .day{ font-size:19px; }
     .poster-lightbox{ padding:14px; }
     .poster-lightbox__image{
       max-width:96vw;
@@ -491,17 +492,31 @@
   }
   @media (max-width:430px){
     .mobile-event-pair{
+      grid-template-columns:minmax(0, 1fr) 146px;
       gap:10px;
     }
+    .mobile-event-pair__poster{
+      width:146px;
+    }
     .mobile-event-pair .event{
-      padding:13px 10px;
+      padding:12px 10px;
     }
     .event-meta{
-      font-size:12px;
+      font-size:11.8px;
+      line-height:1.42;
     }
     .event-title{
-      font-size:14px;
+      font-size:13.5px;
+      padding:5px 9px;
+      margin-bottom:6px;
     }
+    .datebox{
+      width:48px;
+      height:48px;
+      margin-bottom:7px;
+    }
+    .datebox .day{ font-size:18px; }
+    .datebox .mon{ font-size:10px; }
   }
 </style>
 </head>
