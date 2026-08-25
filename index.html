@@ -342,7 +342,7 @@
     height:44px;
     border:1px solid rgba(255,255,255,0.18);
     border-radius:50%;
-    background:rgba(15,20,32,0.78);
+    background:rgba(15,20,32,0.92);
     color:#fff;
     font-size:28px;
     line-height:1;
@@ -384,21 +384,19 @@
     align-items:center;
   }
   .mobile-poster{
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    display:block;
     width:100%;
-    padding:4px;
     border-radius:16px;
     overflow:hidden;
     border:1px solid var(--card-border);
-    background:var(--card);
+    background:transparent;
     box-shadow:0 18px 38px -28px rgba(0,0,0,0.75);
-    transition:transform 0.22s ease, border-color 0.22s ease;
+    transition:transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
   }
   .mobile-poster:hover{
     transform:translateY(-2px);
     border-color:rgba(255,255,255,0.20);
+    box-shadow:0 22px 44px -28px rgba(0,0,0,0.82);
   }
   .mobile-poster img{
     display:block;
@@ -645,6 +643,7 @@ document.querySelectorAll('[data-poster]').forEach(link => {
 });
 
 lightboxClose.addEventListener('click', fermerAffiche);
+lightboxImage.addEventListener('click', fermerAffiche);
 lightbox.addEventListener('click', event => {
   if(event.target === lightbox) fermerAffiche();
 });
