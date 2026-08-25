@@ -8,7 +8,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -288,6 +288,154 @@
 
   footer{ text-align:center; margin-top:30px; color:var(--muted); font-size:12px; }
   code{ background: rgba(255,255,255,0.06); padding:2px 6px; border-radius:5px; }
+
+
+  /* ---------- Responsive mobile ---------- */
+  @media (max-width:700px){
+    html{ -webkit-text-size-adjust:100%; }
+    body{ overflow-x:hidden; }
+
+    header{
+      padding:28px 14px 4px;
+    }
+    .suits{
+      font-size:16px;
+      letter-spacing:8px;
+      margin-bottom:10px;
+    }
+    h1{
+      font-size:clamp(22px, 7vw, 30px);
+      line-height:1.12;
+      letter-spacing:1px;
+    }
+    .tagline{
+      margin-top:7px;
+      font-size:13px;
+      padding:0 8px;
+    }
+
+    main{
+      width:100%;
+      max-width:none;
+      padding:14px max(12px, env(safe-area-inset-right)) calc(42px + env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+    }
+    .lock-screen{
+      width:100%;
+      max-width:420px;
+      margin:28px auto 0;
+      padding:24px 18px;
+      border-radius:14px;
+    }
+    .layout{
+      width:100%;
+      max-width:none;
+      gap:14px;
+    }
+    .panel{
+      padding:18px 14px;
+      margin-bottom:14px;
+      border-radius:14px;
+    }
+    .group{
+      margin-bottom:14px;
+      padding:14px 12px 12px;
+      border-radius:11px;
+    }
+    .group-title{
+      font-size:14px;
+      line-height:1.35;
+      margin-bottom:12px;
+      padding-bottom:9px;
+    }
+
+    /* Les champs sont empilés sur téléphone : aucun texte tronqué,
+       aucune colonne trop étroite. */
+    .row2{
+      grid-template-columns:minmax(0, 1fr);
+      gap:8px;
+    }
+    .row2 > *{ min-width:0; }
+
+    label{
+      font-size:12px;
+      line-height:1.4;
+      margin-top:11px;
+    }
+    .hint,
+    .hint-inline,
+    .panel .sub{
+      overflow-wrap:anywhere;
+    }
+    code{ overflow-wrap:anywhere; }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select,
+    .cs-trigger{
+      min-height:46px;
+      font-size:16px; /* évite le zoom automatique iOS */
+      padding:11px 12px;
+    }
+    .cs-list{
+      max-height:min(240px, 42vh);
+      overscroll-behavior:contain;
+      -webkit-overflow-scrolling:touch;
+    }
+    .cs-option{
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      font-size:16px;
+      padding:10px 12px;
+    }
+
+    button,
+    a.btn-primary,
+    a.btn-secondary,
+    a.btn-publish,
+    a.btn-danger{
+      width:100%;
+      min-height:46px;
+      font-size:14px;
+      padding:12px 14px;
+      touch-action:manipulation;
+    }
+    .actions{
+      margin-top:18px;
+      gap:9px;
+    }
+
+    .topbar{
+      min-height:30px;
+      margin:0 2px 7px;
+    }
+    .logout{
+      font-size:12px;
+      padding:6px 0 6px 10px;
+    }
+    .toggle-settings{
+      text-align:left;
+      line-height:1.45;
+      padding:2px 0;
+    }
+    .status{
+      line-height:1.4;
+      overflow-wrap:anywhere;
+    }
+  }
+
+  @media (max-width:380px){
+    header{ padding-top:22px; }
+    main{
+      padding-left:max(9px, env(safe-area-inset-left));
+      padding-right:max(9px, env(safe-area-inset-right));
+    }
+    .panel{ padding:15px 11px; }
+    .group{ padding:12px 10px 11px; }
+    .suits{ letter-spacing:6px; }
+  }
+
 </style>
 </head>
 <body>
