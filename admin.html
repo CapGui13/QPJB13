@@ -633,12 +633,12 @@ async function handleLogin(){
   }
 }
 
-function unlock(){
+async function unlock(){
   sessionStorage.setItem('qpjb-admin-unlocked', '1');
   document.getElementById('lock-screen').style.display = 'none';
   document.getElementById('admin-panel').style.display = 'block';
   chargerReglages();
-  chargerFormulaire();
+  await chargerFormulaire();
   validerTousLesChamps();
   majApercu();
 }
@@ -785,25 +785,59 @@ function sauvegarderFormulaire(){
   localStorage.setItem('qpjb-editeur', JSON.stringify(data));
 }
 
-function chargerFormulaire(){
+async function chargerFormulaire(){
+  // Source de vérité : data.json publié avec le site. Cela garantit que
+  // desktop, tablette et mobile pré-remplissent exactement les mêmes dates,
+  // même si leur localStorage est différent ou vide.
+  let loadedFromPublishedData = false;
+
   try{
-    const saved = JSON.parse(localStorage.getItem('qpjb-editeur'));
-    if(saved){
-      Object.keys(saved).forEach(id => {
+    const res = await fetch(`data.json?v=${Date.now()}`, { cache: 'no-store' });
+    if(res.ok){
+      const published = await res.json();
+      const values = {
+        'aix-current': published?.aix?.current || '',
+        'aix-next': published?.aix?.next || '',
+        'aix-adresse1': published?.aix?.adresse1 || '18 Boulevard du Maréchal Juin',
+        'aix-adresse2': published?.aix?.adresse2 || '13090 Aix-en-Provence',
+        'mar-current': published?.marseille?.current || '',
+        'mar-next': published?.marseille?.next || '',
+        'mar-adresse': published?.marseille?.adresse1 || '22 rue Montgrand',
+        'mar-adresse2': published?.marseille?.adresse2 || '13006 Marseille'
+      };
+      Object.entries(values).forEach(([id, value]) => {
         const el = document.getElementById(id);
-        if(el) el.value = saved[id];
+        if(el) el.value = value;
       });
-    } else {
-      document.getElementById('aix-adresse1').value = '18 Boulevard du Maréchal Juin';
-      document.getElementById('aix-adresse2').value = '13090 Aix-en-Provence';
-      document.getElementById('mar-adresse').value = '22 rue Montgrand';
-      document.getElementById('mar-adresse2').value = '13006 Marseille';
+      loadedFromPublishedData = true;
     }
-  }catch(e){}
+  }catch(e){
+    // En ouverture locale (file://) le fetch peut être bloqué : on conserve
+    // alors le comportement de secours historique via localStorage.
+  }
+
+  if(!loadedFromPublishedData){
+    try{
+      const saved = JSON.parse(localStorage.getItem('qpjb-editeur'));
+      if(saved){
+        Object.keys(saved).forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.value = saved[id];
+        });
+      } else {
+        document.getElementById('aix-adresse1').value = '18 Boulevard du Maréchal Juin';
+        document.getElementById('aix-adresse2').value = '13090 Aix-en-Provence';
+        document.getElementById('mar-adresse').value = '22 rue Montgrand';
+        document.getElementById('mar-adresse2').value = '13006 Marseille';
+      }
+    }catch(e){}
+  }
+
   ['aix-current','aix-next','mar-current','mar-next'].forEach(prefix => {
     remplirSelectDepuisISO(prefix, document.getElementById(prefix).value);
   });
-  // Si aucun mois n'est encore choisi (nouveau champ, rien d'enregistré),
+
+  // Si aucun mois n'est encore choisi (aucune donnée publiée/enregistrée),
   // on sélectionne par défaut le mois en cours.
   ['aix-current','aix-next','mar-current','mar-next'].forEach(prefix => {
     const moisSel = document.getElementById(prefix + '-month');
@@ -813,9 +847,9 @@ function chargerFormulaire(){
       if(moisSel._csRefresh) moisSel._csRefresh();
     }
   });
-  // Si le "mardi suivant" n'a jamais été renseigné, on le pré-remplit
-  // tout de suite avec current + 14 jours (sans écraser une valeur déjà
-  // enregistrée, potentiellement ajustée manuellement).
+
+  // Si le "mardi suivant" n'est pas renseigné, on le pré-remplit avec
+  // current + 14 jours.
   ['aix','mar'].forEach(ville => {
     if(!document.getElementById(ville + '-next').value){
       autoRemplirNext(ville);
