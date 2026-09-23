@@ -676,7 +676,28 @@ document.addEventListener('keydown', event => {
 const MOIS_NOMS = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const MOIS_ABBR = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
 function parseISO(iso){ if(!iso) return null; const [y, m, d] = iso.split('-').map(Number); if(!y || !m || !d) return null; return new Date(y, m - 1, d); }
-function choisirDate(bloc){ const aujourdhui = new Date(); aujourdhui.setHours(0,0,0,0); const dCurrent = parseISO(bloc.current); const dNext = parseISO(bloc.next); if(dCurrent && dCurrent.getTime() >= aujourdhui.getTime()) return dCurrent; if(dNext) return dNext; return dCurrent; }
+// Calendrier local d'Aix et Marseille : une date dépassée avance de 14 jours,
+// même si l'administrateur n'a pas encore enregistré une nouvelle séance.
+function choisirDate(bloc){
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(new Date());
+  const get = type => Number(parts.find(p => p.type === type).value);
+  const aujourdhui = Date.UTC(get('year'), get('month') - 1, get('day'));
+  const current = parseISO(bloc.current);
+  const next = parseISO(bloc.next);
+  const epochDay = d => Date.UTC(d.getFullYear(), d.getMonth(), d.getDate());
+  if(current && epochDay(current) >= aujourdhui) return current;
+  // La date "next" peut être ajustée manuellement dans l'administration.
+  // Elle constitue donc le point de départ des récurrences suivantes.
+  const base = next || current;
+  if(!base) return null;
+  const ecart = Math.max(0, Math.ceil((aujourdhui - epochDay(base)) / 86400000));
+  const semaines = Math.ceil(ecart / 14);
+  const resultat = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  resultat.setDate(resultat.getDate() + semaines * 14);
+  return resultat;
+}
 function formatDate(d){ if(!d) return { jj: '—', mois: '—', date: '—' }; return { jj: String(d.getDate()), mois: MOIS_ABBR[d.getMonth()], date: d.getDate() + ' ' + MOIS_NOMS[d.getMonth()] }; }
 const DATA_URL = location.protocol === 'file:'
   ? 'https://raw.githubusercontent.com/CapGui13/QPJB13/main/data.json'
@@ -715,6 +736,10 @@ async function chargerDonnees(){
   }
 }
 chargerDonnees();
+// Si un onglet reste ouvert pendant la nuit, actualiser les dates au retour.
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden) chargerDonnees();
+});
 </script>
 </body>
 </html>
