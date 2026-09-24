@@ -785,6 +785,47 @@ function sauvegarderFormulaire(){
   localStorage.setItem('qpjb-editeur', JSON.stringify(data));
 }
 
+// Même règle que sur le site public : afficher la séance réellement à venir,
+// même lorsque data.json contient encore une ancienne date de départ.
+function dateVisibleDepuisDonnees(currentISO, nextISO){
+  const parse = iso => {
+    if(!iso) return null;
+    const [y, m, d] = iso.split('-').map(Number);
+    return y && m && d ? new Date(y, m - 1, d) : null;
+  };
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit'
+  }).formatToParts(new Date());
+  const get = type => Number(parts.find(p => p.type === type).value);
+  const today = Date.UTC(get('year'), get('month') - 1, get('day'));
+  const day = dt => Date.UTC(dt.getFullYear(), dt.getMonth(), dt.getDate());
+  const current = parse(currentISO);
+  const next = parse(nextISO);
+  if(current && day(current) >= today) return currentISO;
+  const base = next || current;
+  if(!base) return '';
+  const gap = Math.max(0, Math.ceil((today - day(base)) / 86400000));
+  const visible = new Date(base.getFullYear(), base.getMonth(), base.getDate());
+  visible.setDate(visible.getDate() + Math.ceil(gap / 14) * 14);
+  return isoFromDate(visible);
+}
+
+function synchroniserDatesVisibles(){
+  ['aix', 'mar'].forEach(ville => {
+    const current = document.getElementById(ville + '-current');
+    const next = document.getElementById(ville + '-next');
+    const visible = dateVisibleDepuisDonnees(current.value, next.value);
+    if(!visible) return;
+    if(visible !== current.value){
+      current.value = visible;
+      const [y, m, d] = visible.split('-').map(Number);
+      const suivante = new Date(y, m - 1, d);
+      suivante.setDate(suivante.getDate() + 14);
+      next.value = isoFromDate(suivante);
+    }
+  });
+}
+
 async function chargerFormulaire(){
   // Source de vérité : data.json publié avec le site. Cela garantit que
   // desktop, tablette et mobile pré-remplissent exactement les mêmes dates,
@@ -832,6 +873,9 @@ async function chargerFormulaire(){
       }
     }catch(e){}
   }
+
+  // Les champs doivent correspondre aux dates affichées sur le site public.
+  synchroniserDatesVisibles();
 
   ['aix-current','aix-next','mar-current','mar-next'].forEach(prefix => {
     remplirSelectDepuisISO(prefix, document.getElementById(prefix).value);
