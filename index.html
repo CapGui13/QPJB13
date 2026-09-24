@@ -178,8 +178,11 @@
     line-height:1.6;
   }
   .event-meta .ph{ color:#c8ad7f; font-style:italic; }
-  .addr-link{ color:inherit; text-decoration:none; border-bottom:1px dotted rgba(255,255,255,0.25); transition: color 0.2s ease, border-color 0.2s ease; }
-  .addr-link:hover{ color: var(--accent); border-bottom-color: var(--accent); }
+  .addr-link{ color:#c8d4e6; text-decoration:none; border-radius:4px; transition:color .2s ease, background-color .2s ease; }
+  .addr-link::after{ content:" ↗"; display:inline-block; font-size:12px; opacity:.7; transition:transform .2s ease, opacity .2s ease; }
+  .addr-link:hover{ color:#fff; background:rgba(255,255,255,.07); }
+  .addr-link:hover::after{ transform:translate(2px,-2px); opacity:1; }
+  .addr-link:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
 
   .info-strip{
     display:flex;
@@ -219,7 +222,11 @@
   }
   .contact-block.aix{ color: var(--accent); }
   .contact-block.marseille{ color: var(--accent2); }
-  .contact-block a{ color:inherit; text-decoration:none; border-bottom:1px dotted currentColor; }
+  .contact-block a{ color:inherit; text-decoration:none; border-radius:4px; transition:color .2s ease, background-color .2s ease; }
+  .contact-block a::after{ content:" ✉"; display:inline-block; font-size:12px; opacity:.7; transition:opacity .2s ease; }
+  .contact-block a:hover{ color:#fff; background:rgba(255,255,255,.07); }
+  .contact-block a:hover::after{ opacity:1; }
+  .contact-block a:focus-visible{ outline:2px solid var(--gold-soft); outline-offset:3px; }
   .contact-block .ph{ font-style:italic; opacity:0.75; }
 
   @media (max-width:600px){
